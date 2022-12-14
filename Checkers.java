@@ -17,6 +17,6 @@ public class Checkers {
     }
 
     public Checkers() {
-        c = new Console();
+        c = new Console(39, 128);
     }
 }
