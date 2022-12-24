@@ -12,6 +12,7 @@ public class Checkers {
     public static void main(String[] args) {
         Checkers g = new Checkers();
         g.splashScreen();
+        g.mainMenu();
     }
 
     public Checkers() {
@@ -38,17 +39,28 @@ public class Checkers {
         cf2.start();
         try {
             cf2.join();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+
+        }
     }
 
     public void textFall() {
         TextFall tf = new TextFall(c);
         tf.start();
+        try {
+            tf.join();
+        } catch (Exception e) {
+
+        }
     }
 
     public void transition() {
         Transition tr = new Transition(c);
         tr.start();
+    }
+
+    public void mainMenu() {
+        // stuff
     }
 
     public static void drawChecker(int x, int y, boolean isRed) {

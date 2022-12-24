@@ -12,4 +12,27 @@ public class Transition extends Thread {
     public Transition (Console con) {
         c = con;
     }
+
+    public void run() {
+        int size = 0;
+
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+
+        }
+
+        while (size < 1500) {
+            c.setColor(Color.BLACK);
+            c.fillOval(1024/2 - size/2, 728/2 - size/2, size, size);
+
+            size += 15;
+
+            try {
+                Thread.sleep(10);
+            } catch (Exception e) {
+
+            }
+        }
+    }
 }
