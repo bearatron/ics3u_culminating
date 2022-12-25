@@ -14,25 +14,26 @@ public class Transition extends Thread {
     }
 
     public void run() {
-        int size = 0;
-
         try {
-            Thread.sleep(2000);
-        } catch (Exception e) {
-
-        }
-
-        while (size < 1500) {
-            c.setColor(Color.BLACK);
-            c.fillOval(1024/2 - size/2, 728/2 - size/2, size, size);
-
-            size += 15;
-
+            Thread.sleep(5000);
+        } catch (Exception e) {}
+        int i = 0;
+        while (i <= 260) {
+            c.setColor(new Color(255,255,255,Math.min(i, 255)));
+            c.fillRect(0, 0, 1024, 728);
+            i += 10;
             try {
-                Thread.sleep(10);
-            } catch (Exception e) {
-
-            }
+                Thread.sleep(1);
+            } catch (Exception e) {}
+        }
+        i = 0;
+        while (i <= 260) {
+            c.setColor(new Color(182,215,168,Math.min(i, 255)));
+            c.fillRect(0, 0, 1024, 728);
+            i += 10;
+            try {
+                Thread.sleep(1);
+            } catch (Exception e) {}
         }
     }
 }
