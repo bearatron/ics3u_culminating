@@ -27,10 +27,6 @@ public class TextFall extends Thread {
             bgG -= 2;
             bgB -= 2;
 
-//            bgR -= bgR / 100;
-//            bgG -= bgG / 100;
-//            bgB -= bgB / 100;
-
             c.setColor(new Color(182, 215, 168));
             c.fillRect(235, 243, 595, 80);
 
