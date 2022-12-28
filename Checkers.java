@@ -8,11 +8,23 @@ import hsa.*;
 
 public class Checkers {
     static Console c;
-
+    static int choice = 1;
     public static void main(String[] args) {
         Checkers g = new Checkers();
         g.splashScreen();
         g.mainMenu();
+        if (choice == 1) {
+
+        }
+        else if (choice == 2) {
+
+        }
+        else if (choice == 3) {
+
+        }
+        else {
+            g.goodbye();
+        }
     }
     public Checkers() {
         c = new Console(39, 128);
@@ -30,97 +42,90 @@ public class Checkers {
     }
 
     public void mainMenu() {
-        int choice = 1;
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
-        c.setColor(new Color(186,95,14, 125));
-        c.fillRect(256, 108, 512, 512);
-        c.setColor(new Color(143,45,0, 125));
-        c.fillRect(272, 124, 480, 480);
-        c.setColor(new Color(65,23,0, 125));
-        for (int i = 0; i < 4; i++) {
-            c.fillRect(332, 124 + i * 120, 60, 60);
-            c.fillRect(452, 124 + i * 120, 60, 60);
-            c.fillRect(572, 124 + i * 120, 60, 60);
-            c.fillRect(692, 124 + i * 120, 60, 60);
-            c.fillRect(272, 184 + i * 120, 60, 60);
-            c.fillRect(392, 184 + i * 120, 60, 60);
-            c.fillRect(512, 184 + i * 120, 60, 60);
-            c.fillRect(632, 184 + i * 120, 60, 60);
-        }
-        for (int i = 0; i < 4; i++) {
-            if (i == 3) {
-                c.setColor(new Color(204,0,0, 125));
-            }
-            else if (i <= 1) {
-                c.setColor(new Color(67,67,67, 125));
-            }
-            else {
-                continue;
-            }
-            c.fillOval(332 + 8, 124 + 8 + i * 120, 44, 44);
-            c.fillOval(452 + 8, 124 + 8 + i * 120, 44, 44);
-            c.fillOval(572 + 8, 124 + 8 + i * 120, 44, 44);
-            c.fillOval(692 + 8, 124 + 8 + i * 120, 44, 44);
-        }
-        for (int i = 0; i < 4; i++) {
-            if (i >= 2) {
-                c.setColor(new Color(204,0,0, 125));
-            }
-            else if (i == 0) {
-                c.setColor(new Color(67,67,67, 125));
-            }
-            else {
-                continue;
-            }
-            c.fillOval(272 + 8, 184 + 8 + i * 120, 44, 44);
-            c.fillOval(392 + 8, 184 + 8 + i * 120, 44, 44);
-            c.fillOval(512 + 8, 184 + 8 + i * 120, 44, 44);
-            c.fillOval(632 + 8, 184 + 8 + i * 120, 44, 44);
-        }
-        c.setColor(new Color(87, 120, 73));
-        c.fillRect(312, 50, 400, 90);
         c.setColor(new Color(0, 0, 0));
         c.setFont(new Font ("SansSerif", Font.BOLD, 75));
-        c.drawString("Checkers", 345, 125);
-        c.setColor(new Color(235,161,86));
-        c.fillRect(412, 225, 200, 60);
-        c.fillRect(412, 325, 200, 60);
-        c.fillRect(412, 425, 200, 60);
-        c.fillRect(412, 525, 200, 60);
-        c.setFont(new Font ("SansSerif", Font.BOLD, 30));
+        c.drawString("CHECKERS", 305, 175);
+        drawChecker(210, 155, true);
+        drawChecker(210, 125, false);
+        drawChecker(360, 185, true);
+        drawChecker(285, 255, false);
+        drawChecker(585, 225, false);
+        drawChecker(665, 165, true);
+        c.setColor(new Color(255, 255, 255));
+        c.fillRoundRect(280, 675, 30, 30, 10, 10);
+        c.fillRoundRect(397, 675, 30, 30, 10, 10);
+        c.fillRoundRect(634, 675, 95, 30, 10, 10);
+        c.setColor(new Color(0, 0, 0));
+        c.drawRoundRect(280, 675, 30, 30, 10, 10);
+        c.drawRoundRect(397, 675, 30, 30, 10, 10);
+        c.drawRoundRect(634, 675, 95, 30, 10, 10);
+        c.setFont(new Font ("Serif", Font.BOLD, 26));
+        c.setColor(new Color(0, 0, 0));
+        c.drawString("Use    W    and    S    to navigate and   ENTER   to select", 215, 700);
+        c.setFont(new Font ("Serif", Font.PLAIN, 30));
         while (true) {
+            c.setColor(new Color(182,215,168));
+            c.fillRect(300, 320, 400, 300);
             c.setColor(new Color(0, 0, 0));
             if (choice == 1) {
-                c.setColor(new Color(87, 120, 73));
-                c.drawString("New Game", 433, 264);
-                c.setColor(new Color(0, 0, 0));
-                c.drawString("Load Game", 430, 364);
-                c.drawString("Instructions", 425, 464);
-                c.drawString("Quit Game", 430, 564);
+                c.setFont(new Font ("Serif", Font.BOLD, 30));
+                c.drawString("New Game", 433, 364);
+                int[] xPoints1 = {380, 380, 417};
+                int[] yPoints1 = {344, 364, 354};
+                c.fillPolygon(xPoints1, yPoints1, 3);
+                int[] xPoints2 = {624, 624, 587};
+                int[] yPoints2 = {344, 364, 354};
+                c.fillPolygon(xPoints2, yPoints2, 3);
+                c.setFont(new Font ("Serif", Font.PLAIN, 30));
+                c.drawString("Load Game", 430, 434);
+                c.drawString("Instructions", 425, 504);
+                c.drawString("Quit Game", 430, 574);
             }
             else if (choice == 2) {
-                c.drawString("New Game", 433, 264);
-                c.setColor(new Color(87, 120, 73));
-                c.drawString("Load Game", 430, 364);
-                c.setColor(new Color(0, 0, 0));
-                c.drawString("Instructions", 425, 464);
-                c.drawString("Quit Game", 430, 564);
+                c.setFont(new Font ("Serif", Font.PLAIN, 30));
+                c.drawString("New Game", 433, 364);
+                c.setFont(new Font ("Serif", Font.BOLD, 30));
+                c.drawString("Load Game", 430, 434);
+                int[] xPoints1 = {378, 378, 415};
+                int[] yPoints1 = {414, 434, 424};
+                c.fillPolygon(xPoints1, yPoints1, 3);
+                int[] xPoints2 = {630, 630, 593};
+                int[] yPoints2 = {414, 434, 424};
+                c.fillPolygon(xPoints2, yPoints2, 3);
+                c.setFont(new Font ("Serif", Font.PLAIN, 30));
+                c.drawString("Instructions", 425, 504);
+                c.drawString("Quit Game", 430, 574);
             }
             else if (choice == 3) {
-                c.drawString("New Game", 433, 264);
-                c.drawString("Load Game", 430, 364);
-                c.setColor(new Color(87, 120, 73));
-                c.drawString("Instructions", 425, 464);
-                c.setColor(new Color(0, 0, 0));
-                c.drawString("Quit Game", 430, 564);
+                c.setFont(new Font ("Serif", Font.PLAIN, 30));
+                c.drawString("New Game", 433, 364);
+                c.drawString("Load Game", 430, 434);
+                c.setFont(new Font ("Serif", Font.BOLD, 30));
+                c.drawString("Instructions", 425, 504);
+                int[] xPoints1 = {374, 374, 411};
+                int[] yPoints1 = {484, 504, 494};
+                c.fillPolygon(xPoints1, yPoints1, 3);
+                int[] xPoints2 = {632, 632, 595};
+                int[] yPoints2 = {484, 504, 494};
+                c.fillPolygon(xPoints2, yPoints2, 3);
+                c.setFont(new Font ("Serif", Font.PLAIN, 30));
+                c.drawString("Quit Game", 430, 574);
             }
             else {
-                c.drawString("New Game", 433, 264);
-                c.drawString("Load Game", 430, 364);
-                c.drawString("Instructions", 425, 464);
-                c.setColor(new Color(87, 120, 73));
-                c.drawString("Quit Game", 430, 564);
+                c.setFont(new Font ("Serif", Font.PLAIN, 30));
+                c.drawString("New Game", 433, 364);
+                c.drawString("Load Game", 430, 434);
+                c.drawString("Instructions", 425, 504);
+                c.setFont(new Font ("Serif", Font.BOLD, 30));
+                c.drawString("Quit Game", 430, 574);
+                int[] xPoints1 = {378, 378, 415};
+                int[] yPoints1 = {554, 574, 564};
+                c.fillPolygon(xPoints1, yPoints1, 3);
+                int[] xPoints2 = {630, 630, 593};
+                int[] yPoints2 = {554, 574, 564};
+                c.fillPolygon(xPoints2, yPoints2, 3);
             }
             char in = c.getChar();
             if (in == 115) {
@@ -136,12 +141,33 @@ public class Checkers {
                 }
             }
             else if (in == 10) {
-                c.clear();
-                break;
+                return;
             }
         }
     }
 
+    public void goodbye() {
+        c.setColor(new Color(182,215,168));
+        c.fillRect(0, 0, 1024, 728);
+        c.setColor(new Color(0, 0, 0));
+        c.setFont(new Font ("Serif", Font.BOLD, 75));
+        c.drawString("Thanks for playing!", 190, 175);
+        c.setFont(new Font ("Serif", Font.PLAIN, 35));
+        c.drawString("This program was made by Ethan Diep and Glen Lin,", 150, 355);
+        c.drawString("submitted on January 18, 2022 as a culminating\n", 180, 400);
+        c.drawString("assignment for ICS3U.", 320, 445);
+        drawChecker(210, 555, true);
+        drawChecker(210, 525, false);
+        drawChecker(360, 585, true);
+        drawChecker(285, 655, false);
+        drawChecker(585, 625, false);
+        drawChecker(665, 565, true);
+        c.setFont(new Font ("Serif", Font.BOLD, 30));
+        c.setColor(new Color(0, 0, 0));
+        c.drawString("Press any key to exit.", 370, 550);
+        char quit = c.getChar();
+        System.exit(0);
+    }
     public void checkersFall1() {
         CheckersFall1 cf1 = new CheckersFall1(c);
         cf1.start();
