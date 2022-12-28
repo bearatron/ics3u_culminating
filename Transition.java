@@ -18,7 +18,7 @@ public class Transition extends Thread {
             Thread.sleep(1000);
         } catch (Exception e) {}
         int i = 0;
-        while (i <= 260) {
+        while (i <= 300) {
             c.setColor(new Color(255,255,255,Math.min(i, 255)));
             c.fillRect(0, 0, 1024, 728);
             i += 100;
@@ -27,7 +27,7 @@ public class Transition extends Thread {
             } catch (Exception e) {}
         }
         i = 0;
-        while (i <= 260) {
+        while (i <= 300) {
             c.setColor(new Color(182,215,168,Math.min(i, 255)));
             c.fillRect(0, 0, 1024, 728);
             i += 50;
