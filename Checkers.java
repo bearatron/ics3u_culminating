@@ -36,10 +36,10 @@ public class Checkers {
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
 
-        //checkersFall1();
-        //checkersFall2();
+        checkersFall1();
+        checkersFall2();
         textFall();
-        //transition();
+        transition();
     }
 
     public void mainMenu() {
