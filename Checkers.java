@@ -12,18 +12,19 @@ public class Checkers {
     public static void main(String[] args) {
         Checkers g = new Checkers();
         g.splashScreen();
-        g.mainMenu();
-        if (choice == 1) {
+        while (true) {
+            g.mainMenu();
+            if (choice == 1) {
 
-        }
-        else if (choice == 2) {
-
-        }
-        else if (choice == 3) {
-
-        }
-        else {
-            g.goodbye();
+            }
+            else if (choice == 2) {
+            }
+            else if (choice == 3) {
+                g.instructions();
+            }
+            else {
+                g.goodbye();
+            }
         }
     }
     public Checkers() {
@@ -35,10 +36,10 @@ public class Checkers {
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
 
-        checkersFall1();
-        checkersFall2();
+        //checkersFall1();
+        //checkersFall2();
         textFall();
-        transition();
+        //transition();
     }
 
     public void mainMenu() {
@@ -54,16 +55,16 @@ public class Checkers {
         drawChecker(585, 225, false);
         drawChecker(665, 165, true);
         c.setColor(new Color(255, 255, 255));
-        c.fillRoundRect(280, 675, 30, 30, 10, 10);
-        c.fillRoundRect(397, 675, 30, 30, 10, 10);
-        c.fillRoundRect(634, 675, 95, 30, 10, 10);
+        c.fillRoundRect(282, 678, 30, 30, 10, 10);
+        c.fillRoundRect(405, 678, 30, 30, 10, 10);
+        c.fillRoundRect(643, 675, 95, 30, 10, 10);
         c.setColor(new Color(0, 0, 0));
-        c.drawRoundRect(280, 675, 30, 30, 10, 10);
-        c.drawRoundRect(397, 675, 30, 30, 10, 10);
-        c.drawRoundRect(634, 675, 95, 30, 10, 10);
+        c.drawRoundRect(282, 678, 30, 30, 10, 10);
+        c.drawRoundRect(405, 678, 30, 30, 10, 10);
+        c.drawRoundRect(643, 675, 95, 30, 10, 10);
         c.setFont(new Font ("Serif", Font.BOLD, 26));
         c.setColor(new Color(0, 0, 0));
-        c.drawString("Use    W    and    S    to navigate and   ENTER   to select", 215, 700);
+        c.drawString("Use     w     and     s     to navigate and   ENTER   to select", 215, 700);
         c.setFont(new Font ("Serif", Font.PLAIN, 30));
         while (true) {
             c.setColor(new Color(182,215,168));
@@ -145,7 +146,369 @@ public class Checkers {
             }
         }
     }
+    public void instructions() {
+        int page = 1;
+        while (true) {
+            char next;
+            if (page == 1) {
+                c.setColor(new Color(182,215,168));
+                c.fillRect(0, 0, 1024, 728);
+                c.setColor(new Color(0, 0, 0));
+                c.fillRoundRect(50, 50, 628, 628, 10, 10);
+                c.setColor(new Color(230, 202, 175));
+                c.fillRect(60, 60, 608, 608);
+                c.setColor(new Color(145, 95, 47));
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        c.setColor(new Color(145, 95, 47));
+                        c.fillRect(136 + 152 * i, 60 + 152 * j, 76, 76);
+                        if (j < 2) {
+                            c.setColor(new Color(0, 0, 0));
+                            c.fillOval(148 + 152 * i, 72 + 152 * j, 52, 52);
+                            c.setColor(new Color(67, 67, 67));
+                            c.fillOval(151 + 152 * i, 75 + 152 * j, 46, 46);
+                        }
+                        if (j == 3) {
+                            c.setColor(new Color(102, 0, 0));
+                            c.fillOval(148 + 152 * i, 72 + 152 * j, 52, 52);
+                            c.setColor(new Color(204, 0, 0));
+                            c.fillOval(151 + 152 * i, 75 + 152 * j, 46, 46);
+                        }
+                    }
+                }
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        c.setColor(new Color(145, 95, 47));
+                        c.fillRect(60 + 152 * i, 136 + 152 * j, 76, 76);
+                        if (j == 0) {
+                            c.setColor(new Color(0, 0, 0));
+                            c.fillOval(72 + 152 * i, 148 + 152 * j, 52, 52);
+                            c.setColor(new Color(67, 67, 67));
+                            c.fillOval(75 + 152 * i, 151 + 152 * j, 46, 46);
+                        }
+                        if (j > 1) {
+                            c.setColor(new Color(102, 0, 0));
+                            c.fillOval(72 + 152 * i, 148 + 152 * j, 52, 52);
+                            c.setColor(new Color(204, 0, 0));
+                            c.fillOval(75 + 152 * i, 151 + 152 * j, 46, 46);
+                        }
+                    }
+                }
+                c.setColor(new Color(0, 0, 0));
+                c.setFont(new Font("Serif", Font.BOLD, 40));
+                c.drawString("Setup", 710, 130);
+                c.setFont(new Font("Serif", Font.PLAIN, 30));
+                c.drawString("Checkers is a board game", 710, 200);
+                c.drawString("for two players. One", 710, 235);
+                c.drawString("player has the red pieces,", 710, 270);
+                c.drawString("and the other has the", 710, 305);
+                c.drawString("black pieces. At the start", 710, 340);
+                c.drawString("of the game, each of the", 710, 375);
+                c.drawString("set up as shown on ", 710, 410);
+                c.drawString("board.", 710, 445);
+                c.setColor(new Color(255, 255, 255));
+                c.fillRoundRect(963, 637, 30, 30, 10, 10);
+                c.setColor(new Color(0, 0, 0));
+                c.drawRoundRect(963, 637, 30, 30, 10, 10);
+                c.setFont(new Font("Serif", Font.BOLD, 26));
+                c.drawString("Next >    d", 870, 660);
+            }
+            if (page == 2) {
+                c.setColor(new Color(182,215,168));
+                c.fillRect(0, 0, 1024, 728);
+                c.setColor(new Color(0, 0, 0));
+                c.fillRoundRect(50, 50, 628, 628, 10, 10);
+                c.setColor(new Color(230, 202, 175));
+                c.fillRect(60, 60, 608, 608);
+                c.setColor(new Color(145, 95, 47));
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        c.setColor(new Color(145, 95, 47));
+                        c.fillRect(136 + 152 * i, 60 + 152 * j, 76, 76);
+                        if (j < 2) {
+                            c.setColor(new Color(0, 0, 0));
+                            c.fillOval(148 + 152 * i, 72 + 152 * j, 52, 52);
+                            c.setColor(new Color(67, 67, 67));
+                            c.fillOval(151 + 152 * i, 75 + 152 * j, 46, 46);
+                        }
+                        if (j == 3) {
+                            c.setColor(new Color(102, 0, 0));
+                            c.fillOval(148 + 152 * i, 72 + 152 * j, 52, 52);
+                            c.setColor(new Color(204, 0, 0));
+                            c.fillOval(151 + 152 * i, 75 + 152 * j, 46, 46);
+                        }
+                    }
+                }
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        c.setColor(new Color(145, 95, 47));
+                        c.fillRect(60 + 152 * i, 136 + 152 * j, 76, 76);
+                        if (j == 0) {
+                            c.setColor(new Color(0, 0, 0));
+                            c.fillOval(72 + 152 * i, 148 + 152 * j, 52, 52);
+                            c.setColor(new Color(67, 67, 67));
+                            c.fillOval(75 + 152 * i, 151 + 152 * j, 46, 46);
+                        }
+                        if (j > 1) {
+                            if (j == 2 && i == 0) {
+                                continue;
+                            }
+                            c.setColor(new Color(102, 0, 0));
+                            c.fillOval(72 + 152 * i, 148 + 152 * j, 52, 52);
+                            c.setColor(new Color(204, 0, 0));
+                            c.fillOval(75 + 152 * i, 151 + 152 * j, 46, 46);
+                        }
+                    }
+                }
+                c.setColor(new Color(102, 0, 0));
+                c.fillOval(148, 72 + 152 * 2, 52, 52);
+                c.setColor(new Color(204, 0, 0));
+                c.fillOval(151, 75 + 152 * 2, 46, 46);
+                c.setColor(new Color(255, 255, 255));
+                int[] xPoints1 = {96, 100, 148, 144};
+                int[] yPoints1 = {476, 480, 432, 428};
+                c.fillPolygon(xPoints1, yPoints1, 4);
+                int[] xPoints2 = {156, 126, 156};
+                int[] yPoints2 = {420, 420, 450};
+                c.fillPolygon(xPoints2, yPoints2, 3);
+                c.drawLine(98, 478,131,440);
+                c.setColor(new Color(0, 0, 0));
+                c.setFont(new Font("Serif", Font.BOLD, 40));
+                c.drawString("Movement", 710, 130);
+                c.setFont(new Font("Serif", Font.PLAIN, 30));
+                c.drawString("A turn consists of", 710, 200);
+                c.drawString("moving one checkers", 710, 235);
+                c.drawString("piece. A checker can only", 710, 270);
+                c.drawString("move diagonally forwards", 710, 305);
+                c.drawString("one space in either", 710, 340);
+                c.drawString("direction (diagonally to", 710, 375);
+                c.drawString("the left or to the", 710, 410);
+                c.drawString("right). A sample move", 710, 445);
+                c.drawString("is shown on the board.", 710, 480);
+                c.setColor(new Color(255, 255, 255));
+                c.fillRoundRect(963, 637, 30, 30, 10, 10);
+                c.setColor(new Color(0, 0, 0));
+                c.drawRoundRect(963, 637, 30, 30, 10, 10);
+                c.setFont(new Font("Serif", Font.BOLD, 26));
+                c.drawString("Next >    d", 870, 660);
+                c.setColor(new Color(255, 255, 255));
+                c.fillRoundRect(692, 637, 30, 30, 10, 10);
+                c.setColor(new Color(0, 0, 0));
+                c.drawRoundRect(692, 637, 30, 30, 10, 10);
+                c.drawString("a    < Prev", 700, 660);
+            }
+            if (page == 3) {
+                c.setColor(new Color(182,215,168));
+                c.fillRect(0, 0, 1024, 728);
+                c.setColor(new Color(0, 0, 0));
+                c.fillRoundRect(50, 50, 628, 628, 10, 10);
+                c.setColor(new Color(230, 202, 175));
+                c.fillRect(60, 60, 608, 608);
+                c.setColor(new Color(145, 95, 47));
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        c.setColor(new Color(145, 95, 47));
+                        c.fillRect(136 + 152 * i, 60 + 152 * j, 76, 76);
+                        if (j < 2) {
+                            if (j == 1 && i == 1) {
+                                continue;
+                            }
+                            c.setColor(new Color(0, 0, 0));
+                            c.fillOval(148 + 152 * i, 72 + 152 * j, 52, 52);
+                            c.setColor(new Color(67, 67, 67));
+                            c.fillOval(151 + 152 * i, 75 + 152 * j, 46, 46);
+                        }
+                        if (j == 3) {
+                            c.setColor(new Color(102, 0, 0));
+                            c.fillOval(148 + 152 * i, 72 + 152 * j, 52, 52);
+                            c.setColor(new Color(204, 0, 0));
+                            c.fillOval(151 + 152 * i, 75 + 152 * j, 46, 46);
+                        }
+                    }
+                }
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        c.setColor(new Color(145, 95, 47));
+                        c.fillRect(60 + 152 * i, 136 + 152 * j, 76, 76);
+                        if (j == 0) {
+                            c.setColor(new Color(0, 0, 0));
+                            c.fillOval(72 + 152 * i, 148 + 152 * j, 52, 52);
+                            c.setColor(new Color(67, 67, 67));
+                            c.fillOval(75 + 152 * i, 151 + 152 * j, 46, 46);
+                        }
+                        if (j > 1) {
+                            if (j == 2 && i == 0) {
+                                continue;
+                            }
+                            c.setColor(new Color(102, 0, 0));
+                            c.fillOval(72 + 152 * i, 148 + 152 * j, 52, 52);
+                            c.setColor(new Color(204, 0, 0));
+                            c.fillOval(75 + 152 * i, 151 + 152 * j, 46, 46);
+                        }
+                    }
+                }
+                c.setColor(new Color(102, 0, 0));
+                c.fillOval(148, 72 + 152 * 2, 52, 52);
+                c.setColor(new Color(204, 0, 0));
+                c.fillOval(151, 75 + 152 * 2, 46, 46);
+                c.setColor(new Color(0, 0, 0));
+                c.fillOval(72 + 152 * 1, 148 + 152 * 1, 52, 52);
+                c.setColor(new Color(67, 67, 67));
+                c.fillOval(75 + 152 * 1, 151 + 152 * 1, 46, 46);
+                c.setColor(new Color(255, 255, 255));
+                int[] xPoints1 = {96 + 114, 100 + 114, 148 + 152+20, 144 + 152+20};
+                int[] yPoints1 = {476 - 114, 480 - 114, 432 - 152-20, 428 - 152-20};
+                c.fillPolygon(xPoints1, yPoints1, 4);
+                int[] xPoints2 = {156 + 152+20, 126 + 152+20, 156 + 152+20};
+                int[] yPoints2 = {420 - 152-20, 420 - 152-20, 450 - 152-20};
+                c.fillPolygon(xPoints2, yPoints2, 3);
+                c.setColor(new Color(0, 0, 0));
+                c.setFont(new Font("Serif", Font.BOLD, 40));
+                c.drawString("Capture", 710, 130);
+                c.setFont(new Font("Serif", Font.PLAIN, 30));
+                c.drawString("You can capture", 710, 200);
+                c.drawString("your opponent’s pieces by", 710, 235);
+                c.drawString("jumping over them. In", 710, 270);
+                c.drawString("this example, the red", 710, 305);
+                c.drawString("piece can jump over the", 710, 340);
+                c.drawString("black one, thereby", 710, 375);
+                c.drawString("capturing the black piece.", 710, 410);
+                c.drawString("It is then removed from", 710, 445);
+                c.drawString("the board. The goal of", 710, 480);
+                c.drawString("the game is to capture all", 710, 515);
+                c.drawString("of your opponent’s pieces.", 710, 550);
+                c.setColor(new Color(255, 255, 255));
+                c.fillRoundRect(963, 637, 30, 30, 10, 10);
+                c.setColor(new Color(0, 0, 0));
+                c.drawRoundRect(963, 637, 30, 30, 10, 10);
+                c.setFont(new Font("Serif", Font.BOLD, 26));
+                c.drawString("Next >    d", 870, 660);
+                c.setColor(new Color(255, 255, 255));
+                c.fillRoundRect(692, 637, 30, 30, 10, 10);
+                c.setColor(new Color(0, 0, 0));
+                c.drawRoundRect(692, 637, 30, 30, 10, 10);
+                c.drawString("a    < Prev", 700, 660);
+            }
+            if (page == 4) {
+                c.setColor(new Color(182,215,168));
+                c.fillRect(0, 0, 1024, 728);
+                c.setColor(new Color(0, 0, 0));
+                c.fillRoundRect(50, 50, 628, 628, 10, 10);
+                c.setColor(new Color(230, 202, 175));
+                c.fillRect(60, 60, 608, 608);
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        c.setColor(new Color(145, 95, 47));
+                        c.fillRect(136 + 152 * i, 60 + 152 * j, 76, 76);
+                    }
+                }
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        c.setColor(new Color(145, 95, 47));
+                        c.fillRect(60 + 152 * i, 136 + 152 * j, 76, 76);
+                    }
+                }
+                c.setColor(new Color(0, 0, 0));
+                c.fillOval(148 + 152 * 1, 72 + 152 * 2, 52, 52);
+                c.setColor(new Color(67, 67, 67));
+                c.fillOval(151 + 152 * 1, 75 + 152 * 2, 46, 46);
+                c.setColor(new Color(0, 0, 0));
+                c.fillOval(148 + 152 * 1, 72 + 152 * 3, 52, 52);
+                c.setColor(new Color(67, 67, 67));
+                c.fillOval(151 + 152 * 1, 75 + 152 * 3, 46, 46);
+                c.setColor(new Color(0, 0, 0));
+                c.fillOval(148 + 152 * 2, 72 + 152 * 2, 52, 52);
+                c.setColor(new Color(67, 67, 67));
+                c.fillOval(151 + 152 * 2, 75 + 152 * 2, 46, 46);
+                c.setColor(new Color(0, 0, 0));
+                c.fillOval(148 + 152 * 3, 72 + 152 * 2, 52, 52);
+                c.setColor(new Color(67, 67, 67));
+                c.fillOval(151 + 152 * 3, 75 + 152 * 2, 46, 46);
+                c.setColor(new Color(102, 0, 0));
+                c.fillOval(148 + 152 * 0, 72 + 152 * 3, 52, 52);
+                c.setColor(new Color(204, 0, 0));
+                c.fillOval(151 + 152 * 0, 75 + 152 * 3, 46, 46);
+                c.setColor(new Color(102, 0, 0));
+                c.fillOval(148 + 152 * 2, 72 + 152 * 0, 52, 52);
+                c.setColor(new Color(204, 0, 0));
+                c.fillOval(151 + 152 * 2, 75 + 152 * 0, 46, 46);
+                c.setColor(new Color(246,178,107));
+                int[] xPoints1 = {60 + 38+76*5, 60 + 38+76*5 + 5, 60 + 38+76*5 + 11, 60 + 38+76*5 + 11, 60 + 38+76*5 - 11, 60 + 38+76*5 - 11, 60 + 38+76*5 - 5};
+                int[] yPoints1 = {60 + 38 - 6, 60 + 38, 60 + 38 - 3, 60 + 38 + 6, 60 + 38 + 6, 60 + 38 - 3, 60 + 38};
+                c.fillPolygon(xPoints1, yPoints1, 7);
+                c.setColor(new Color(0, 0, 0));
+                c.fillOval(72 + 152 * 0, 148 + 152 * 0, 52, 52);
+                c.setColor(new Color(67, 67, 67));
+                c.fillOval(75 + 152 * 0, 151 + 152 * 0, 46, 46);
+                c.setColor(new Color(0, 0, 0));
+                c.fillOval(72 + 152 * 1, 148 + 152 * 1, 52, 52);
+                c.setColor(new Color(67, 67, 67));
+                c.fillOval(75 + 152 * 1, 151 + 152 * 1, 46, 46);
+                c.setColor(new Color(0, 0, 0));
+                c.fillOval(72 + 152 * 3, 148 + 152 * 1, 52, 52);
+                c.setColor(new Color(67, 67, 67));
+                c.fillOval(75 + 152 * 3, 151 + 152 * 1, 46, 46);
+                c.setColor(new Color(102, 0, 0));
+                c.fillOval(72 + 152 * 0, 148 + 152 * 1, 52, 52);
+                c.setColor(new Color(204, 0, 0));
+                c.fillOval(75 + 152 * 0, 151 + 152 * 1, 46, 46);
+                c.setColor(new Color(102, 0, 0));
+                c.fillOval(72 + 152 * 2, 148 + 152 * 2, 52, 52);
+                c.setColor(new Color(204, 0, 0));
+                c.fillOval(75 + 152 * 2, 151 + 152 * 2, 46, 46);
+                c.setColor(new Color(102, 0, 0));
+                c.fillOval(72 + 152 * 0, 148 + 152 * 2, 52, 52);
+                c.setColor(new Color(204, 0, 0));
+                c.fillOval(75 + 152 * 0, 151 + 152 * 2, 46, 46);
+                c.setColor(new Color(255, 255, 255));
+                int[] xPoints2 = {60 + 38+76*5 + 18, 60 + 38+76*5 + 22, 60 + 38+76*5 + 22 + 50, 60 + 38+76*5 + 18 + 50};
+                int[] yPoints2 = {60 + 38 + 22, 60 + 38 + 18, 60 + 38 + 18 + 50, 60 + 38 + 22 + 50};
+                c.fillPolygon(xPoints2, yPoints2, 4);
+                int[] xPoints3 = {60 + 38+76*6, 60 + 38+76*6, 30 + 38+76*6};
+                int[] yPoints3 = {60 + 38 + 76, 30 + 38 + 76, 60 + 38 + 76};
+                c.fillPolygon(xPoints3, yPoints3, 3);
+                c.setColor(new Color(0, 0, 0));
+                c.setFont(new Font("Serif", Font.BOLD, 40));
+                c.drawString("King", 710, 130);
+                c.setFont(new Font("Serif", Font.PLAIN, 30));
+                c.drawString("If your piece reaches the", 710, 200);
+                c.drawString("last row, it becomes a", 710, 235);
+                c.drawString("king. Kings can move or", 710, 270);
+                c.drawString("capture one space", 710, 305);
+                c.drawString("diagonally in any", 710, 340);
+                c.drawString("direction. They are not", 710, 375);
+                c.drawString("limited to moving", 710, 410);
+                c.drawString("forwards only.", 710, 445);
+                c.setColor(new Color(255, 255, 255));
+                c.fillRoundRect(963, 637, 30, 30, 10, 10);
+                c.setColor(new Color(0, 0, 0));
+                c.drawRoundRect(963, 637, 30, 30, 10, 10);
+                c.setFont(new Font("Serif", Font.BOLD, 26));
+                c.drawString("Return >    d", 844, 660);
+                c.setColor(new Color(255, 255, 255));
+                c.fillRoundRect(692, 637, 30, 30, 10, 10);
+                c.setColor(new Color(0, 0, 0));
+                c.drawRoundRect(692, 637, 30, 30, 10, 10);
+                c.drawString("a    < Prev", 700, 660);
+            }
+            next = c.getChar();
+            if (next == 100) {
+                c.clear();
+                page++;
+                if (page == 5) {
+                    choice = 1;
+                    return;
+                }
+            }
+            if (next == 97) {
+                if (page > 1) {
+                    page--;
+                    c.clear();
+                }
+            }
+        }
 
+    }
     public void goodbye() {
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
