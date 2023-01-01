@@ -221,6 +221,11 @@ public class Checkers {
             }
             if (input == 10) {
                 while (true) {
+                    if (fileName.equals("quit")) {
+                        mainMenu();
+                        break;
+                    }
+
                     try {
                         BufferedReader sc = new BufferedReader(new FileReader(fileName));
                         for (int i = 0; i < 8; i++) {
@@ -235,7 +240,7 @@ public class Checkers {
 
                         return;
                     }
-                    catch(FileNotFoundException e) {
+                    catch (FileNotFoundException e) {
                         c.setColor(new Color(182,215,168));
                         c.fillRect(0, 504, 1024, 60);
                         c.setColor(new Color(224, 19, 19));
