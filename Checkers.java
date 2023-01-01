@@ -4,25 +4,36 @@
 // Description: This program makes a checkers game in the Console window
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 import hsa.*;
 
 public class Checkers {
     static Console c;
-    static int choice = 1;
+    static int choice = 1, numMoves = 0;
+    static char [][] board = new char[8][8];
+    static String playerOne, playerTwo;
     public static void main(String[] args) {
         Checkers g = new Checkers();
         g.splashScreen();
         while (true) {
             g.mainMenu();
             if (choice == 1) {
-
+                c.clear();
             }
             else if (choice == 2) {
+                c.clear();
+                g.loadFile();
             }
             else if (choice == 3) {
+                c.clear();
                 g.instructions();
             }
             else {
+                c.clear();
                 g.goodbye();
             }
         }
@@ -36,13 +47,14 @@ public class Checkers {
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
 
-        checkersFall1();
-        checkersFall2();
+        //checkersFall1();
+        //checkersFall2();
         textFall();
-        transition();
+        //transition();
     }
 
     public void mainMenu() {
+        choice = 1;
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
         c.setColor(new Color(0, 0, 0));
@@ -144,6 +156,92 @@ public class Checkers {
             else if (in == 10) {
                 return;
             }
+        }
+    }
+
+    public void loadFile() {
+        String fileName = "";
+        c.setColor(new Color(182,215,168));
+        c.fillRect(0, 0, 1024, 728);
+        c.setColor(new Color(0, 0, 0));
+        c.setFont(new Font ("Serif", Font.BOLD, 60));
+        c.drawString("LOAD A FILE", 320, 120);
+        c.setFont(new Font ("Serif", Font.PLAIN, 30));
+        c.drawString("Load a game file to continue where you left off. Make sure the file is", 110, 200);
+        c.drawString("in the same folder as this program and is a .txt file, or else it will", 132, 240);
+        c.drawString("not work. (The standard file is called “gameState.txt”.)", 200, 280);
+        c.drawString("or type “quit“ to go back to main menu", 280, 650);
+        c.setFont(new Font("Serif", Font.BOLD, 30));
+        c.drawString("Enter the file’s name (including “.txt”)", 280, 350);
+        c.setColor(new Color(0, 0, 0));
+        c.fillRoundRect(146, 421, 732, 83, 3, 3);
+        c.setColor(new Color(255, 255, 255));
+        c.fillRect(150, 425, 724, 75);
+        char input = c.getChar();
+        while (true) {
+            c.setColor(new Color(0, 0, 0));
+            c.fillRoundRect(146, 421, 732, 83, 3, 3);
+            c.setColor(new Color(255, 255, 255));
+            c.fillRect(150, 425, 724, 75);
+            if (input >= 32 && input <= 126) {
+                fileName += input;
+            }
+            if (input == 8 && fileName.length() > 0) {
+                fileName = fileName.substring(0, fileName.length() - 1);
+            }
+            if (input == 10) {
+                while (true) {
+                    try {
+                        BufferedReader sc = new BufferedReader(new FileReader(fileName));
+                        for (int i = 0; i < 8; i++) {
+                            String line = sc.readLine();
+                            for (int j = 0; j < 8; j++) {
+                                board[i][j] = line.charAt(j);
+                            }
+                        }
+                        playerOne = sc.readLine();
+                        playerTwo = sc.readLine();
+                        numMoves = Integer.parseInt(sc.readLine());
+
+                        return;
+                    }
+                    catch(FileNotFoundException e) {
+                        c.setColor(new Color(182,215,168));
+                        c.fillRect(0, 504, 1024, 60);
+                        c.setColor(new Color(224, 19, 19));
+                        c.setFont(new Font ("Serif", Font.PLAIN, 45));
+                        c.drawString("File was not found", 342, 560);
+                        break;
+                    }
+                    catch (IOException e) {
+                        c.setColor(new Color(182,215,168));
+                        c.fillRect(0, 504, 1024, 60);
+                        c.setColor(new Color(224, 19, 19));
+                        c.setFont(new Font ("Serif", Font.PLAIN, 45));
+                        c.drawString("File is empty or does not exist", 322, 560);
+                        break;
+                    }
+                    catch (NullPointerException e) {
+                        c.setColor(new Color(182,215,168));
+                        c.fillRect(0, 504, 1024, 60);
+                        c.setColor(new Color(224, 19, 19));
+                        c.setFont(new Font ("Serif", Font.PLAIN, 45));
+                        c.drawString("File is empty or does not exist", 252, 560);
+                        break;
+                    }
+                }
+            }
+            c.setFont(new Font ("MonoSpaced", Font.PLAIN, 60));
+            c.setColor(new Color(0, 0, 0));
+            if (fileName.length() <= 19) {
+                c.drawString(fileName, 160, 480);
+            }
+            else {
+                c.drawString(fileName, 145 - 36 * (fileName.length() - 20), 480);
+            }
+            c.setColor(new Color(182,215,168));
+            c.fillRect(0, 421, 146, 83);
+            input = c.getChar();
         }
     }
     public void instructions() {
