@@ -16,6 +16,8 @@ public class Checkers {
     static int choice = 1, numMoves = 0;
     static char [][] board = new char[8][8];
     static String playerOne, playerTwo;
+
+    static boolean fileLoaded = false;
     public static void main(String[] args) {
         Checkers g = new Checkers();
 
@@ -24,6 +26,11 @@ public class Checkers {
             g.mainMenu();
             if (choice == 1) {
                 c.clear();
+                if (fileLoaded) {
+                    g.turn();
+                } else {
+                    g.gameSetup();
+                }
             }
             else if (choice == 2) {
                 c.clear();
@@ -56,6 +63,12 @@ public class Checkers {
 
     public void mainMenu() {
         choice = 1;
+
+        if (fileLoaded) {
+            return;
+        }
+
+        // title
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
         c.setColor(new Color(0, 0, 0));
@@ -189,6 +202,40 @@ public class Checkers {
         }
     }
 
+    public void gameSetup() {
+
+    }
+
+    public void turn() {
+        fileLoaded = false;
+        c.setColor(new Color(182,215,168));
+        c.fillRect(0, 0, 1024, 728);
+        drawBoard(board, 40, 100);
+
+        while (true) {
+        }
+    }
+
+    public int[] squareSelection(int row, int col) {
+        return new int[] {}; // placeholder
+    }
+
+    public boolean validMove(int row, int col) {
+        return board[row][col] == 'e'; // placeholder
+    }
+
+    public void updateGameFile() {
+
+    }
+
+    public void animateMove() {
+
+    }
+
+    public char evaluatePosition() {
+        return 'w'; // placeholder
+    }
+
     public void loadFile() {
         String fileName = "";
         c.setColor(new Color(182,215,168));
@@ -221,11 +268,6 @@ public class Checkers {
             }
             if (input == 10) {
                 while (true) {
-                    if (fileName.equals("quit")) {
-                        mainMenu();
-                        break;
-                    }
-
                     try {
                         BufferedReader sc = new BufferedReader(new FileReader(fileName));
                         for (int i = 0; i < 8; i++) {
@@ -238,6 +280,7 @@ public class Checkers {
                         playerTwo = sc.readLine();
                         numMoves = Integer.parseInt(sc.readLine());
 
+                        fileLoaded = true;
                         return;
                     }
                     catch (FileNotFoundException e) {
@@ -246,6 +289,9 @@ public class Checkers {
                         c.setColor(new Color(224, 19, 19));
                         c.setFont(new Font ("Serif", Font.PLAIN, 45));
                         c.drawString("File was not found", 342, 560);
+                        if (fileName.equals("quit")) {
+                            return;
+                        }
                         break;
                     }
                     catch (IOException e) {
@@ -266,6 +312,7 @@ public class Checkers {
                     }
                 }
             }
+
             c.setFont(new Font ("MonoSpaced", Font.PLAIN, 60));
             c.setColor(new Color(0, 0, 0));
             if (fileName.length() <= 19) {
