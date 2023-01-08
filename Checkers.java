@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
 import hsa.*;
 
 public class Checkers {
@@ -401,11 +400,11 @@ public class Checkers {
                 );
 
                 // draws arrow indicating movement of piece
-                int[] xPoints1 = {67, 72, 110, 107};
+                int[] xPoints1 = {63, 68, 106, 103};
                 int[] yPoints1 = {505, 510, 469, 464};
                 c.setColor(Color.WHITE);
                 c.fillPolygon(xPoints1, yPoints1, 4); // arrow shaft
-                int[] xPoints2 = {95, 110, 126};
+                int[] xPoints2 = {91, 106, 122};
                 int[] yPoints2 = {464, 479, 447};
                 c.fillPolygon(xPoints2, yPoints2, 3); // arrow head
 
@@ -543,10 +542,10 @@ public class Checkers {
 
                 // draws arrow to indicate piece movement
                 c.setColor(Color.WHITE);
-                int[] xPoints2 = {440, 445, 475, 470};
+                int[] xPoints2 = {442, 447, 482, 477};
                 int[] yPoints2 = {160, 155, 190, 195};
                 c.fillPolygon(xPoints2, yPoints2, 4); // arrow shaft
-                int[] xPoints3 = {455, 470, 485};
+                int[] xPoints3 = {460, 475, 490};
                 int[] yPoints3 = {195, 175, 205};
                 c.fillPolygon(xPoints3, yPoints3, 3); // arrow head
 
