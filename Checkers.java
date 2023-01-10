@@ -4,29 +4,32 @@
 // Description: This program makes a checkers game in the Console window
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import hsa.*;
+import java.io.*;
+import hsa.Console;
+import hsa.Message;
 
 public class Checkers {
     static Console c;
-    static int choice = 1, numMoves = 0;
+    static int choice = 1, turnNumber = 1;
     static char [][] board = new char[8][8];
     static String playerOne, playerTwo;
-
-    static boolean fileLoaded = false;
+    static boolean playerOnesTurn = true, fileLoaded = false;
     public static void main(String[] args) {
         Checkers g = new Checkers();
 
-        g.splashScreen();
+//        g.loadFile();
+//
+//        try {
+//            Thread.sleep(10000);
+//        } catch (Exception e) {}
+//
+//        g.splashScreen();
         while (true) {
             g.mainMenu();
             if (choice == 1) {
                 c.clear();
                 if (fileLoaded) {
-                    g.turn();
+                    g.game();
                 } else {
                     g.gameSetup();
                 }
@@ -202,16 +205,193 @@ public class Checkers {
     }
 
     public void gameSetup() {
+        // initializing default game requirements
 
+        playerOne = getName(true); // getting player one's name
+        playerTwo = getName(false); // getting player two's name
+
+        // setting up the board
+        board = new char[][] {
+                {'-', 'b', '-', 'b', '-', 'b', '-', 'b'},
+                {'b', '-', 'b', '-', 'b', '-', 'b', '-'},
+                {'-', 'b', '-', 'b', '-', 'b', '-', 'b'},
+                {'e', '-', 'e', '-', 'e', '-', 'e', '-'},
+                {'-', 'e', '-', 'e', '-', 'e', '-', 'e'},
+                {'r', '-', 'r', '-', 'r', '-', 'r', '-'},
+                {'-', 'r', '-', 'r', '-', 'r', '-', 'r'},
+                {'r', '-', 'r', '-', 'r', '-', 'r', '-'},
+        };
+
+        turnNumber = 1; // resetting turn number
+        playerOnesTurn = true; // resetting player turn indicator
+
+        try {
+            // creating an object for the game file
+            File gameFile = new File("gameState.txt");
+
+            gameFile.createNewFile(); // creates new game file
+
+            try {
+                FileWriter fw = new FileWriter(gameFile);
+                PrintWriter pw = new PrintWriter(fw);
+
+                // adds board to file
+                for (int i = 0; i < board.length; i ++) {
+                    for (int j = 0; j < board[i].length; j ++) {
+                        pw.print(board[i][j]);
+                    }
+                    pw.println();
+                }
+
+                // adds player names to file
+                pw.println(playerOne);
+                pw.println(playerTwo);
+
+                // adds number of moves to file
+                pw.println(turnNumber);
+
+                // adds if it's player one's turn to the file
+                pw.println(playerOnesTurn);
+
+                // closes the file
+                pw.close();
+            } catch (Exception e) {
+                new Message(e.getMessage()); // displays error message
+                mainMenu(); // brings user back to main menu
+            }
+        } catch (Exception e) {
+            new Message(e.getMessage()); // displays error message
+            mainMenu(); // brings user back to main menu
+        }
+
+        game(); // proceeding to the game
+    }
+
+    public String getName(boolean redPlayer) {
+        String name = ""; // variable to store the user's name
+
+        // background
+        c.setColor(new Color(182,215,168));
+        c.fillRect(0, 0, 1024, 728);
+
+        // title
+        c.setColor(Color.BLACK);
+        c.setFont(new Font ("Serif", Font.BOLD, 60));
+        c.drawString("ENTER YOUR NAME", 225, 180);
+
+        // instructions
+        c.setFont(new Font ("Serif", Font.PLAIN, 30));
+        c.drawString("Player   , please enter your name below. Your name must be", 140, 380);
+
+        if (redPlayer) {
+            // drawing red checkers
+            for (int i = 300; i <= 600; i += 150) {
+                drawChecker(i, 270, true);
+            }
+
+            // displaying different text
+            c.setColor(Color.BLACK);
+            c.drawString("1", 223, 380);
+            c.drawString("between 1 and 20 characters long. You will play as red.", 165, 420);
+        } else {
+            // drawing black checkers
+            for (int i = 300; i <= 600; i += 150) {
+                drawChecker(i, 270, false);
+            }
+            // displaying different text
+            c.setColor(Color.BLACK);
+            c.drawString("2", 223, 380);
+            c.drawString("between 1 and 20 characters long. You will play as black.", 155, 420);
+        }
+
+        // drawing text box
+        c.setColor(new Color(0, 0, 0));
+        c.fillRoundRect(146, 471, 732, 83, 3, 3);
+        c.setColor(new Color(255, 255, 255));
+        c.fillRect(150, 475, 724, 75);
+
+        // variable to store the most recent letter the user typed
+        char input = c.getChar();
+
+        while (true) {
+            // redrawing text box
+            c.setColor(new Color(0, 0, 0));
+            c.fillRoundRect(146, 471, 732, 83, 3, 3);
+            c.setColor(new Color(255, 255, 255));
+            c.fillRect(150, 475, 724, 75);
+
+            // add the input to name if the user presses an alphanumeric key
+            if (input >= 32 && input <= 126) {
+                name += input;
+            }
+
+            // if the user presses backspace, delete one letter from the name
+            if (input == 8 && name.length() > 0) {
+                name = name.substring(0, name.length() - 1);
+            }
+
+            // user presses enter
+            if (input == 10) {
+                if (name.length() >= 1 && name.length() <= 20) {
+                    return name; // returns name
+                } else {
+                    // erases previous error message
+                    c.setColor(new Color(182, 215, 168));
+                    c.fillRect(0, 532, 1024, 60);
+
+                    // displays error message
+                    c.setColor(new Color(224, 19, 19));
+                    c.setFont(new Font("Serif", Font.PLAIN, 45));
+                    c.drawString("Name must be between 1 and 20 characters", 125, 600);
+                }
+            }
+
+            // drawing what the user has typed so far to the screen
+            c.setFont(new Font ("MonoSpaced", Font.PLAIN, 60));
+            c.setColor(new Color(0, 0, 0));
+            if (name.length() <= 19) {
+                c.drawString(name, 160, 530);
+            }
+            else {
+                // scrolls the text if it overflows as the user types
+                c.drawString(name, 145 - 36 * (name.length() - 20), 530);
+            }
+
+            // covers the overflow text
+            c.setColor(new Color(182,215,168));
+            c.fillRect(0, 471, 146, 83);
+
+            input = c.getChar(); // gets next keyboard input
+        }
+    }
+
+    public void game() {
+        turn();
     }
 
     public void turn() {
-        fileLoaded = false;
+        fileLoaded = false; // reset file loaded variable
+
+        // draws the board
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
-        drawBoard(board, 40, 100);
+        drawBoard(board, 40, 115);
+
+        // message that says whose turn it is
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Monospaced", Font.BOLD, 40));
+
+        // drawing centered message
+        if (playerOnesTurn) {
+            c.drawString(playerOne, 512 - (7 + playerOne.length()) / 2 * 25, 90);
+            c.drawString("'s turn", 512 - (7 + playerOne.length()) / 2 * 25 + playerOne.length() * 25, 90);
+        } else {
+            c.drawString(playerTwo, 512 - (7 + playerTwo.length()) / 2 * 25, 90);
+            c.drawString("'s turn", 512 - (7 + playerTwo.length()) / 2 * 25 + playerTwo.length() * 25, 90);
+        }
 
         while (true) {
+
         }
     }
 
@@ -236,12 +416,18 @@ public class Checkers {
     }
 
     public void loadFile() {
-        String fileName = "";
+        String fileName = ""; // variable to store the file name
+
+        // background
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
-        c.setColor(new Color(0, 0, 0));
+
+        // title
+        c.setColor(Color.BLACK);
         c.setFont(new Font ("Serif", Font.BOLD, 60));
         c.drawString("LOAD A FILE", 320, 120);
+
+        // instructions
         c.setFont(new Font ("Serif", Font.PLAIN, 30));
         c.drawString("Load a game file to continue where you left off. Make sure the file is", 110, 200);
         c.drawString("in the same folder as this program and is a .txt file, or else it will", 132, 240);
@@ -249,80 +435,112 @@ public class Checkers {
         c.drawString("or type “quit“ to go back to main menu", 280, 650);
         c.setFont(new Font("Serif", Font.BOLD, 30));
         c.drawString("Enter the file’s name (including “.txt”)", 280, 350);
+
+        // drawing text box
         c.setColor(new Color(0, 0, 0));
         c.fillRoundRect(146, 421, 732, 83, 3, 3);
         c.setColor(new Color(255, 255, 255));
         c.fillRect(150, 425, 724, 75);
+
+        // variable to store the most recent letter the user typed
         char input = c.getChar();
+
         while (true) {
+            // redrawing text box
             c.setColor(new Color(0, 0, 0));
             c.fillRoundRect(146, 421, 732, 83, 3, 3);
             c.setColor(new Color(255, 255, 255));
             c.fillRect(150, 425, 724, 75);
+
+            // add the input to fileName if the user presses an alphanumeric key
             if (input >= 32 && input <= 126) {
                 fileName += input;
             }
+
+            // if the user presses backspace, delete one letter from the name
             if (input == 8 && fileName.length() > 0) {
                 fileName = fileName.substring(0, fileName.length() - 1);
             }
-            if (input == 10) {
-                while (true) {
-                    try {
-                        BufferedReader sc = new BufferedReader(new FileReader(fileName));
-                        for (int i = 0; i < 8; i++) {
-                            String line = sc.readLine();
-                            for (int j = 0; j < 8; j++) {
-                                board[i][j] = line.charAt(j);
-                            }
-                        }
-                        playerOne = sc.readLine();
-                        playerTwo = sc.readLine();
-                        numMoves = Integer.parseInt(sc.readLine());
 
-                        fileLoaded = true;
-                        return;
-                    }
-                    catch (FileNotFoundException e) {
-                        c.setColor(new Color(182,215,168));
-                        c.fillRect(0, 504, 1024, 60);
-                        c.setColor(new Color(224, 19, 19));
-                        c.setFont(new Font ("Serif", Font.PLAIN, 45));
-                        c.drawString("File was not found", 342, 560);
-                        if (fileName.equals("quit")) {
-                            return;
+            // user presses enter
+            if (input == 10) {
+                try {
+                    BufferedReader sc = new BufferedReader(new FileReader(fileName));
+
+                    // fill the board variable with the information stored in the file
+                    for (int i = 0; i < 8; i++) {
+                        String line = sc.readLine();
+                        for (int j = 0; j < 8; j++) {
+                            board[i][j] = line.charAt(j);
                         }
-                        break;
                     }
-                    catch (IOException e) {
-                        c.setColor(new Color(182,215,168));
-                        c.fillRect(0, 504, 1024, 60);
-                        c.setColor(new Color(224, 19, 19));
-                        c.setFont(new Font ("Serif", Font.PLAIN, 45));
-                        c.drawString("File is empty or does not exist", 322, 560);
-                        break;
-                    }
-                    catch (NullPointerException e) {
-                        c.setColor(new Color(182,215,168));
-                        c.fillRect(0, 504, 1024, 60);
-                        c.setColor(new Color(224, 19, 19));
-                        c.setFont(new Font ("Serif", Font.PLAIN, 45));
-                        c.drawString("File is empty or does not exist", 252, 560);
-                        break;
-                    }
+
+                    // fill in the players' names with the information stored in the file
+                    playerOne = sc.readLine();
+                    playerTwo = sc.readLine();
+
+                    // fill in the number of moves made with the information stored in the file
+                    turnNumber = Integer.parseInt(sc.readLine());
+
+                    // fill in whose turn it is with the information stored in the file
+                    playerOnesTurn = Boolean.parseBoolean(sc.readLine());
+
+                    fileLoaded = true;
+                    return;
+                }
+                catch (FileNotFoundException e) {
+                    // erases previous error message
+                    c.setColor(new Color(182,215,168));
+                    c.fillRect(0, 504, 1024, 60);
+                    c.setColor(new Color(224, 19, 19));
+
+                    // displays error message
+                    c.setFont(new Font ("Serif", Font.PLAIN, 45));
+                    c.drawString("File was not found", 342, 560);
+                }
+                catch (IOException e) {
+                    // erases previous error message
+                    c.setColor(new Color(182,215,168));
+                    c.fillRect(0, 504, 1024, 60);
+                    c.setColor(new Color(224, 19, 19));
+
+                    // displays error message
+                    c.setFont(new Font ("Serif", Font.PLAIN, 45));
+                    c.drawString("File is incorrectly formatted, or does not exist", 115, 560);
+                }
+                catch (NullPointerException e) {
+                    // erases previous error message
+                    c.setColor(new Color(182,215,168));
+                    c.fillRect(0, 504, 1024, 60);
+                    c.setColor(new Color(224, 19, 19));
+
+                    // displays error message
+                    c.setFont(new Font ("Serif", Font.PLAIN, 45));
+                    c.drawString("File is empty or does not exist", 252, 560);
+                }
+
+                // leave load file window
+                if (fileName.equals("quit")) {
+                    return;
                 }
             }
 
+            // drawing what the user has typed so far to the screen
             c.setFont(new Font ("MonoSpaced", Font.PLAIN, 60));
             c.setColor(new Color(0, 0, 0));
             if (fileName.length() <= 19) {
                 c.drawString(fileName, 160, 480);
             }
             else {
+                // scrolls the text if it overflows as the user types
                 c.drawString(fileName, 145 - 36 * (fileName.length() - 20), 480);
             }
+
+            // covers the overflow text
             c.setColor(new Color(182,215,168));
             c.fillRect(0, 421, 146, 83);
-            input = c.getChar();
+
+            input = c.getChar(); // gets next keyboard input
         }
     }
     public void instructions() {
