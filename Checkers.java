@@ -337,12 +337,12 @@ public class Checkers {
                 } else {
                     // erases previous error message
                     c.setColor(new Color(182, 215, 168));
-                    c.fillRect(0, 532, 1024, 60);
+                    c.fillRect(0, 555, 1024, 60);
 
                     // displays error message
                     c.setColor(new Color(224, 19, 19));
                     c.setFont(new Font("Serif", Font.PLAIN, 45));
-                    c.drawString("Name must be between 1 and 20 characters", 125, 600);
+                    c.drawString("Name must be between 1 and 20 characters", 125, 610);
                 }
             }
 
@@ -372,7 +372,7 @@ public class Checkers {
     public void turn() {
         fileLoaded = false; // reset file loaded variable
 
-        // draws the board
+        // draws the background and board
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
         drawBoard(board, 40, 115);
@@ -385,22 +385,393 @@ public class Checkers {
         if (playerOnesTurn) {
             c.drawString(playerOne, 512 - (7 + playerOne.length()) / 2 * 25, 90);
             c.drawString("'s turn", 512 - (7 + playerOne.length()) / 2 * 25 + playerOne.length() * 25, 90);
+            drawTopChecker(665, 120, 44, 4, true, false);
         } else {
             c.drawString(playerTwo, 512 - (7 + playerTwo.length()) / 2 * 25, 90);
             c.drawString("'s turn", 512 - (7 + playerTwo.length()) / 2 * 25 + playerTwo.length() * 25, 90);
+            drawTopChecker(665, 120, 44, 4, false, false);
         }
+
+        // displaying the turn number
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Monospaced", Font.BOLD, 30));
+        c.drawString("Turn", 725, 150);
+        c.drawString(String.valueOf(turnNumber), 810, 150);
+
+        // instructions
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Serif", Font.PLAIN, 30));
+        c.drawString("Use", 685, 350);
+
+        // W key
+        c.setColor(Color.WHITE);
+        c.fillRoundRect(815, 280, 30, 30, 10, 10);
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Serif", Font.BOLD, 24));
+        c.drawRoundRect(815, 280, 30, 30, 10, 10);
+        c.drawString("W", 819,305);
+
+        // A key
+        c.setColor(Color.WHITE);
+        c.fillRoundRect(775, 325, 30, 30, 10, 10);
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Serif", Font.BOLD, 24));
+        c.drawRoundRect(775, 325, 30, 30, 10, 10);
+        c.drawString("A", 781,350);
+
+        // S key
+        c.setColor(Color.WHITE);
+        c.fillRoundRect(815, 325, 30, 30, 10, 10);
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Serif", Font.BOLD, 24));
+        c.drawRoundRect(815, 325, 30, 30, 10, 10);
+        c.drawString("S", 822,350);
+
+        // D key
+        c.setColor(Color.WHITE);
+        c.fillRoundRect(855, 325, 30, 30, 10, 10);
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Serif", Font.BOLD, 24));
+        c.drawRoundRect(855, 325, 30, 30, 10, 10);
+        c.drawString("D", 860,350);
+
+        // instructions continued
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Serif", Font.PLAIN, 30));
+        c.drawString("to move the cursor", 675, 417);
+        c.drawString("Press                 to select", 655, 520);
+
+        // enter key
+        c.setColor(Color.WHITE);
+        c.fillRoundRect(730, 495, 100, 30, 10, 10); // enter
+        c.setColor(Color.BLACK);
+        c.drawRoundRect(730, 495, 100, 30, 10, 10); // enter
+
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Serif", Font.BOLD, 24));
+        c.drawString("ENTER", 738, 520);
+
+        c.setColor(Color.BLACK);
+        c.setFont(new Font("Serif", Font.BOLD, 30));
+        c.drawString("Choose a piece to move", 645, 650);
+
+        int[] selection;
+        int pieceRow, pieceCol, rowTo, colTo;
+
+        // selecting piece
+        while (true) {
+            selection = squareSelection(7, 0);
+            pieceRow = selection[0];
+            pieceCol = selection[1];
+
+            if (playerOnesTurn) {
+                if (board[pieceRow][pieceCol] == 'r' || board[pieceRow][pieceCol] == 'R') {
+                    break;
+                } else {
+                    new Message("Invalid choice, please select a square with a red checker on it");
+                }
+            } else {
+                if (board[pieceRow][pieceCol] == 'b' || board[pieceRow][pieceCol] == 'B') {
+                    break;
+                } else {
+                    new Message("Invalid choice, please select a square with a black checker on it");
+                }
+            }
+        }
+
+        // selecting square to move to
+        while (true) {
+            selection = squareSelection(7, 0, pieceRow, pieceCol);
+            rowTo = selection[0];
+            colTo = selection[1];
+
+            if (validMove(pieceRow, pieceCol, rowTo, colTo)) {
+                new Message("Valid move");
+            } else {
+                new Message("Invalid move");
+            }
+
+            System.out.println(validMove(pieceRow, pieceCol, rowTo, colTo));
+        }
+
+    }
+
+    public boolean validMove(int rowFrom, int colFrom, int rowTo, int colTo) {
+        char piece = board[rowFrom][colFrom];
+
+        if (playerOnesTurn) {
+            if (Math.abs(rowTo - rowFrom) == 1) {
+                if (rowTo - rowFrom > 0) {
+                    // moving forward one
+                    if (Math.abs(colTo - colFrom) == 1) {
+                        if (board[rowTo][colTo] == '-') {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                } else {
+                    // moving backward one
+                    if (piece == 'R') {
+                        if (Math.abs(colTo - colFrom) == 1) {
+                            if (board[rowTo][colTo] == '-') {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+            } else if (Math.abs(rowTo - rowFrom) == 2) {
+                // capturing piece
+
+                if (rowTo - rowFrom < 0) {
+                    // capturing backwards
+                    if (piece == 'r') {
+                        return false;
+                    } else {
+                        if (Math.abs(colTo - colFrom) == 2) {
+                            // makes sure the piece is capturing perfectly diagonally
+
+                        }
+                    }
+                }
+
+                if (piece == 'r') {
+                    if (rowTo - rowFrom == 2 && Math.abs(colTo - colFrom) == 2) {
+                        if (board[rowTo][colTo] == '-') {
+                            if (colTo - colFrom < 0) {
+                                // capturing left
+                                if (board[rowTo - 1][colTo + 1] == 'b' || board[rowTo - 1][colTo + 1] == 'B') {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            } else {
+                                // capturing right
+                                if (board[rowTo - 1][colTo - 1] == 'b' || board[rowTo - 1][colTo - 1] == 'B') {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return false;
+    }
+
+    public int[] squareSelection(int startingRow, int startingCol) {
+        int row = startingRow;
+        int col = startingCol;
+        char input = 'a';
 
         while (true) {
+            // draws board
+            drawBoard(board, 40, 115);
+
+            // square border
+            c.setColor(Color.WHITE);
+            c.fillRect(5 + 40 + 70 * col, 5 + 115 + 70 * row, 70, 70);
+
+            Color lightBrown = new Color(230, 202, 175); // light brown squares
+            Color darkBrown = new Color(145, 95, 47); // dark brown squares
+
+            // setting square colour
+            if (row % 2 == 0) {
+                if (col % 2 == 0) {
+                    c.setColor(lightBrown);
+                } else {
+                    c.setColor(darkBrown);
+                }
+            } else {
+                if (col % 2 == 0) {
+                    c.setColor(darkBrown);
+                } else {
+                    c.setColor(lightBrown);
+                }
+            }
+
+            // drawing square
+            c.fillRect(4 + 5 + 40 + 70 * col, 4 + 5 + 115 + 70 * row, 62, 62);
+
+            // drawing piece on square
+            switch (board[row][col]) {
+                case 'r': // red plain checker
+                    drawTopChecker(17 + 40 + 70 * col, 17 + 115 + 70 * row, 44, 4, true, false);
+                    break;
+                case 'b': // black plain checker
+                    drawTopChecker(17 + 40 + 70 * col, 17 + 115 + 70 * row, 44, 4, false, false);
+                    break;
+                case 'R': // red king
+                    drawTopChecker(17 + 40 + 70 * col, 17 + 115 + 70 * row, 44, 4, true, true);
+                    break;
+                case 'B': // black king
+                    drawTopChecker(17 + 40 + 70 * col, 17 + 115 + 70 * row, 44, 4, false, true);
+                    break;
+                default:
+                    break;
+            }
+
+            input = c.getChar();
+
+            if (input == 'w') {
+                if (row != 0){
+                    row --;
+                }
+            } else if (input == 's') {
+                if (row != 7) {
+                    row ++;
+                }
+            } else if (input == 'a') {
+                if (col != 0) {
+                    col --;
+                }
+            } else if (input == 'd'){
+                if (col != 7) {
+                    col ++;
+                }
+            } else if (input == 10) {
+                // enter key pressed
+                break;
+            }
 
         }
+
+        return new int[] {row, col}; // placeholder
     }
 
-    public int[] squareSelection(int row, int col) {
-        return new int[] {}; // placeholder
-    }
+    public int[] squareSelection(int startingRow, int startingCol, int selectedRow, int selectedCol) {
+        int row = startingRow;
+        int col = startingCol;
+        char input = 'a';
 
-    public boolean validMove(int row, int col) {
-        return board[row][col] == 'e'; // placeholder
+        while (true) {
+            // draws board
+            drawBoard(board, 40, 115);
+
+            // square border
+            c.setColor(Color.WHITE);
+            c.fillRect(5 + 40 + 70 * selectedCol, 5 + 115 + 70 * selectedRow, 70, 70);
+            c.fillRect(5 + 40 + 70 * col, 5 + 115 + 70 * row, 70, 70);
+
+            Color lightBrown = new Color(230, 202, 175); // light brown squares
+            Color darkBrown = new Color(145, 95, 47); // dark brown squares
+
+            // setting square colour
+            if (row % 2 == 0) {
+                if (col % 2 == 0) {
+                    c.setColor(lightBrown);
+                } else {
+                    c.setColor(darkBrown);
+                }
+            } else {
+                if (col % 2 == 0) {
+                    c.setColor(darkBrown);
+                } else {
+                    c.setColor(lightBrown);
+                }
+            }
+
+            // drawing currently highlighted square
+            c.fillRect(4 + 5 + 40 + 70 * col, 4 + 5 + 115 + 70 * row, 62, 62);
+
+
+            // setting square colour
+            if (selectedRow % 2 == 0) {
+                if (selectedCol % 2 == 0) {
+                    c.setColor(lightBrown);
+                } else {
+                    c.setColor(darkBrown);
+                }
+            } else {
+                if (selectedCol % 2 == 0) {
+                    c.setColor(darkBrown);
+                } else {
+                    c.setColor(lightBrown);
+                }
+            }
+
+            // drawing already selected square
+            c.fillRect(4 + 5 + 40 + 70 * selectedCol, 4 + 5 + 115 + 70 * selectedRow, 62, 62);
+
+            // drawing highlighted piece on square
+            switch (board[row][col]) {
+                case 'r': // red plain checker
+                    drawTopChecker(17 + 40 + 70 * col, 17 + 115 + 70 * row, 44, 4, true, false);
+                    break;
+                case 'b': // black plain checker
+                    drawTopChecker(17 + 40 + 70 * col, 17 + 115 + 70 * row, 44, 4, false, false);
+                    break;
+                case 'R': // red king
+                    drawTopChecker(17 + 40 + 70 * col, 17 + 115 + 70 * row, 44, 4, true, true);
+                    break;
+                case 'B': // black king
+                    drawTopChecker(17 + 40 + 70 * col, 17 + 115 + 70 * row, 44, 4, false, true);
+                    break;
+                default:
+                    break;
+            }
+
+            // drawing piece on selected square
+            switch (board[selectedRow][selectedCol]) {
+                case 'r': // red plain checker
+                    drawTopChecker(17 + 40 + 70 * selectedCol, 17 + 115 + 70 * selectedRow, 44, 4, true, false);
+                    break;
+                case 'b': // black plain checker
+                    drawTopChecker(17 + 40 + 70 * selectedCol, 17 + 115 + 70 * selectedRow, 44, 4, false, false);
+                    break;
+                case 'R': // red king
+                    drawTopChecker(17 + 40 + 70 * selectedCol, 17 + 115 + 70 * selectedRow, 44, 4, true, true);
+                    break;
+                case 'B': // black king
+                    drawTopChecker(17 + 40 + 70 * selectedCol, 17 + 115 + 70 * selectedRow, 44, 4, false, true);
+                    break;
+                default:
+                    break;
+            }
+
+            input = c.getChar();
+
+            if (input == 'w') {
+                if (row != 0){
+                    row --;
+                }
+            } else if (input == 's') {
+                if (row != 7) {
+                    row ++;
+                }
+            } else if (input == 'a') {
+                if (col != 0) {
+                    col --;
+                }
+            } else if (input == 'd'){
+                if (col != 7) {
+                    col ++;
+                }
+            } else if (input == 10) {
+                // enter key pressed
+                break;
+            }
+        }
+
+        return new int[] {row, col}; // placeholder
     }
 
     public void updateGameFile() {
