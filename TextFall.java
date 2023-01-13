@@ -1,5 +1,5 @@
 // Names: Ethan Diep and Glen Lin
-// Date: December 23, 2022
+// Date: January 13, 2023
 // Teacher: Ms. Basaraba
 // Description: This class animates the title text falling as part of the splash screen
 
