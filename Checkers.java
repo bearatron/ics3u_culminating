@@ -1068,7 +1068,12 @@ public class Checkers {
                     turnNumber = Integer.parseInt(sc.readLine());
 
                     // fill in whose turn it is with the information stored in the file
-                    playerOnesTurn = Boolean.parseBoolean(sc.readLine());
+                    String whoseTurn = sc.readLine();
+                    if (whoseTurn.equals("true")) {
+                        playerOnesTurn = true;
+                    } else {
+                        playerOnesTurn = false;
+                    }
 
                     fileLoaded = true;
                     return;
@@ -1506,7 +1511,9 @@ public class Checkers {
             c.setColor(new Color(182,215,168));
             c.fillRect(x, 0, 111, toY + 70);
 
-            for (int[] existingChecker : existingCheckers) {
+
+            for (int i = 0; i < existingCheckers.length; i++) {
+                int[] existingChecker = existingCheckers[i];
                 drawChecker(existingChecker[0], existingChecker[1], existingChecker[2] != 0);
             }
 
