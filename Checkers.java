@@ -379,42 +379,7 @@ public class Checkers {
             playerOnesTurn = !playerOnesTurn;
 
             // write new position to file
-            try {
-                // creating an object for the game file
-                File gameFile = new File("gameState.txt");
-
-                try {
-                    FileWriter fw = new FileWriter(gameFile);
-                    PrintWriter pw = new PrintWriter(fw);
-
-                    // adds board to file
-                    for (int i = 0; i < board.length; i ++) {
-                        for (int j = 0; j < board[i].length; j ++) {
-                            pw.print(board[i][j]);
-                        }
-                        pw.println();
-                    }
-
-                    // adds player names to file
-                    pw.println(playerOne);
-                    pw.println(playerTwo);
-
-                    // adds number of moves to file
-                    pw.println(turnNumber);
-
-                    // adds if it's player one's turn to the file
-                    pw.println(playerOnesTurn);
-
-                    // closes the file
-                    pw.close();
-                } catch (Exception e) {
-                    new Message(e.getMessage()); // displays error message
-                    mainMenu(); // brings user back to main menu
-                }
-            } catch (Exception e) {
-                new Message(e.getMessage()); // displays error message
-                mainMenu(); // brings user back to main menu
-            }
+            updateGameFile();
         }
     }
 
@@ -989,7 +954,42 @@ public class Checkers {
     }
 
     public void updateGameFile() {
+        try {
+            // creating an object for the game file
+            File gameFile = new File("gameState.txt");
 
+            try {
+                FileWriter fw = new FileWriter(gameFile);
+                PrintWriter pw = new PrintWriter(fw);
+
+                // adds board to file
+                for (int i = 0; i < board.length; i ++) {
+                    for (int j = 0; j < board[i].length; j ++) {
+                        pw.print(board[i][j]);
+                    }
+                    pw.println();
+                }
+
+                // adds player names to file
+                pw.println(playerOne);
+                pw.println(playerTwo);
+
+                // adds number of moves to file
+                pw.println(turnNumber);
+
+                // adds if it's player one's turn to the file
+                pw.println(playerOnesTurn);
+
+                // closes the file
+                pw.close();
+            } catch (Exception e) {
+                new Message(e.getMessage()); // displays error message
+                mainMenu(); // brings user back to main menu
+            }
+        } catch (Exception e) {
+            new Message(e.getMessage()); // displays error message
+            mainMenu(); // brings user back to main menu
+        }
     }
 
     public void animateMove() {
