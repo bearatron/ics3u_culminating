@@ -5,6 +5,8 @@
 
 import java.awt.*;
 import java.io.*;
+import java.util.Arrays;
+
 import hsa.Console;
 import hsa.Message;
 
@@ -498,46 +500,92 @@ public class Checkers {
         c.setFont(new Font("Serif", Font.BOLD, 24));
         c.drawString("ENTER", 738, 520);
 
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Serif", Font.BOLD, 30));
-        c.drawString("Choose a piece to move", 645, 650);
-
         int[] selection;
-        int pieceRow, pieceCol, rowTo, colTo;
+        int pieceRow, pieceCol, rowTo = -1, colTo = -1;
+        boolean reselect; // stores whether the user wants to reselect their piece choice or not
 
-        // selecting piece
         while (true) {
-            selection = squareSelection(7, 0);
-            pieceRow = selection[0];
-            pieceCol = selection[1];
+            reselect = false;
 
-            if (playerOnesTurn) {
-                if (board[pieceRow][pieceCol] == 'r' || board[pieceRow][pieceCol] == 'R') {
-                    break;
+            // erases previous instructions
+            c.setColor(new Color(182, 215, 168));
+            c.fillRect(620, 585, 400, 100);
+            c.setColor(Color.BLACK);
+            c.setFont(new Font("Serif", Font.BOLD, 30));
+            c.drawString("Choose a piece to move", 650, 650);
+
+            // selecting piece
+            while (true) {
+                if (playerOnesTurn) {
+                    selection = squareSelection(7, 0); // bottom left square
                 } else {
-                    new Message("Invalid choice, please select a square with a red checker on it");
+                    selection = squareSelection(0, 0); // top left square
                 }
-            } else {
-                if (board[pieceRow][pieceCol] == 'b' || board[pieceRow][pieceCol] == 'B') {
-                    break;
+
+                pieceRow = selection[0];
+                pieceCol = selection[1];
+
+                if (playerOnesTurn) {
+                    if (board[pieceRow][pieceCol] == 'r' || board[pieceRow][pieceCol] == 'R') {
+                        break;
+                    } else {
+                        new Message("Invalid choice, please select a square with a red checker on it");
+                    }
                 } else {
-                    new Message("Invalid choice, please select a square with a black checker on it");
+                    if (board[pieceRow][pieceCol] == 'b' || board[pieceRow][pieceCol] == 'B') {
+                        break;
+                    } else {
+                        new Message("Invalid choice, please select a square with a black checker on it");
+                    }
                 }
             }
-        }
 
-        // selecting square to move to
-        while (true) {
-            selection = squareSelection(7, 0, pieceRow, pieceCol);
-            rowTo = selection[0];
-            colTo = selection[1];
+            // erases previous instructions
+            c.setColor(new Color(182, 215, 168));
+            c.fillRect(620, 585, 400, 100);
+            c.setColor(Color.BLACK);
+            c.setFont(new Font("Serif", Font.BOLD, 30));
+            c.drawString("Choose a square to move to", 630, 620);
+            c.setFont(new Font("Serif", Font.BOLD, 25));
+            c.drawString("Press        to reselect your piece", 637, 675);
 
-            if (validMove(pieceRow, pieceCol, rowTo, colTo)) {
-                new Message("Valid move");
-                break;
-            } else {
-                new Message("Invalid move");
+            // R key
+            c.setColor(Color.WHITE);
+            c.fillRoundRect(708, 650, 30, 30, 10, 10);
+            c.setColor(Color.BLACK);
+            c.setFont(new Font("Serif", Font.BOLD, 24));
+            c.drawRoundRect(708, 650, 30, 30, 10, 10);
+            c.drawString("R", 713,675);
+
+            // selecting square to move to
+            while (true) {
+                if (playerOnesTurn) {
+                    selection = squareSelection(7, 0, pieceRow, pieceCol); // bottom left square
+                } else {
+                    selection = squareSelection(0, 0, pieceRow, pieceCol); // top left square
+                }
+
+                if (Arrays.equals(selection, new int[]{-1, -1})) {
+                    // reselect piece to move
+                    reselect = true;
+                    break;
+                }
+
+                rowTo = selection[0];
+                colTo = selection[1];
+
+                if (validMove(pieceRow, pieceCol, rowTo, colTo)) {
+                    break;
+                } else {
+                    new Message("Invalid move");
+                }
             }
+
+            if (reselect) {
+                continue;
+            }
+
+            break;
         }
 
         // updating board
@@ -567,7 +615,12 @@ public class Checkers {
             }
 
             // moves piece forward
-            board[rowTo][colTo] = board[pieceRow][pieceCol];
+            if (rowTo == 0 && board[pieceRow][pieceCol] == 'r') {
+                // promoting to king
+                board[rowTo][colTo] = 'R';
+            } else {
+                board[rowTo][colTo] = board[pieceRow][pieceCol];
+            }
             board[pieceRow][pieceCol] = 'e';
 
         } else {
@@ -596,10 +649,14 @@ public class Checkers {
             }
 
             // moves piece forward
-            board[rowTo][colTo] = board[pieceRow][pieceCol];
+            if (rowTo == 7 && board[pieceRow][pieceCol] == 'b') {
+                // promoting to king
+                board[rowTo][colTo] = 'B';
+            } else {
+                board[rowTo][colTo] = board[pieceRow][pieceCol];
+            }
             board[pieceRow][pieceCol] = 'e';
         }
-
     }
 
     public boolean validMove(int rowFrom, int colFrom, int rowTo, int colTo) {
@@ -805,10 +862,9 @@ public class Checkers {
                 // enter key pressed
                 break;
             }
-
         }
 
-        return new int[] {row, col}; // placeholder
+        return new int[] {row, col};
     }
 
     public int[] squareSelection(int startingRow, int startingCol, int selectedRow, int selectedCol) {
@@ -821,8 +877,9 @@ public class Checkers {
             drawBoard(board, 40, 115);
 
             // square border
-            c.setColor(Color.WHITE);
+            c.setColor(new Color(233, 234, 247)); // colour to indicate selected
             c.fillRect(5 + 40 + 70 * selectedCol, 5 + 115 + 70 * selectedRow, 70, 70);
+            c.setColor(Color.WHITE);
             c.fillRect(5 + 40 + 70 * col, 5 + 115 + 70 * row, 70, 70);
 
             Color lightBrown = new Color(230, 202, 175); // light brown squares
@@ -922,10 +979,13 @@ public class Checkers {
             } else if (input == 10) {
                 // enter key pressed
                 break;
+            } else if (input == 'r') {
+                // reselect piece
+                return new int[] {-1, -1};
             }
         }
 
-        return new int[] {row, col}; // placeholder
+        return new int[] {row, col};
     }
 
     public void updateGameFile() {
