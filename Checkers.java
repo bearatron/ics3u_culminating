@@ -545,12 +545,24 @@ public class Checkers {
             // red's turn
             if (Math.abs(rowTo - pieceRow) == 2) {
                 // capturing piece
-                if (colTo - pieceCol < 0) {
-                    // capturing left
-                    board[rowTo + 1][colTo + 1] = 'e';
+                if (rowTo - pieceRow == -2) {
+                    // capturing forwards
+                    if (colTo - pieceCol < 0) {
+                        // capturing left
+                        board[rowTo + 1][colTo + 1] = 'e';
+                    } else {
+                        // capturing right
+                        board[rowTo + 1][colTo - 1] = 'e';
+                    }
                 } else {
-                    // capturing right
-                    board[rowTo + 1][colTo - 1] = 'e';
+                    // capturing backwards
+                    if (colTo - pieceCol < 0) {
+                        // capturing left
+                        board[rowTo - 1][colTo + 1] = 'e';
+                    } else {
+                        // capturing right
+                        board[rowTo - 1][colTo - 1] = 'e';
+                    }
                 }
             }
 
@@ -562,12 +574,24 @@ public class Checkers {
             // black's turn
             if (Math.abs(rowTo - pieceRow) == 2) {
                 // capturing piece
-                if (colTo - pieceCol < 0) {
-                    // capturing left
-                    board[rowTo - 1][colTo + 1] = 'e';
+                if (rowTo - pieceRow == 2) {
+                    // capturing forwards
+                    if (colTo - pieceCol < 0) {
+                        // capturing left
+                        board[rowTo - 1][colTo + 1] = 'e';
+                    } else {
+                        // capturing right
+                        board[rowTo - 1][colTo - 1] = 'e';
+                    }
                 } else {
-                    // capturing right
-                    board[rowTo - 1][colTo - 1] = 'e';
+                    // capturing backwards
+                    if (colTo - pieceCol < 0) {
+                        // capturing left
+                        board[rowTo + 1][colTo + 1] = 'e';
+                    } else {
+                        // capturing right
+                        board[rowTo + 1][colTo - 1] = 'e';
+                    }
                 }
             }
 
