@@ -366,7 +366,54 @@ public class Checkers {
     }
 
     public void game() {
-        turn();
+        while (true) {
+            turn();
+
+            if (!playerOnesTurn) {
+                // increment turn number if it's black's turn
+                turnNumber++;
+            }
+
+            playerOnesTurn = !playerOnesTurn;
+
+            // write new position to file
+            try {
+                // creating an object for the game file
+                File gameFile = new File("gameState.txt");
+
+                try {
+                    FileWriter fw = new FileWriter(gameFile);
+                    PrintWriter pw = new PrintWriter(fw);
+
+                    // adds board to file
+                    for (int i = 0; i < board.length; i ++) {
+                        for (int j = 0; j < board[i].length; j ++) {
+                            pw.print(board[i][j]);
+                        }
+                        pw.println();
+                    }
+
+                    // adds player names to file
+                    pw.println(playerOne);
+                    pw.println(playerTwo);
+
+                    // adds number of moves to file
+                    pw.println(turnNumber);
+
+                    // adds if it's player one's turn to the file
+                    pw.println(playerOnesTurn);
+
+                    // closes the file
+                    pw.close();
+                } catch (Exception e) {
+                    new Message(e.getMessage()); // displays error message
+                    mainMenu(); // brings user back to main menu
+                }
+            } catch (Exception e) {
+                new Message(e.getMessage()); // displays error message
+                mainMenu(); // brings user back to main menu
+            }
+        }
     }
 
     public void turn() {
@@ -487,11 +534,46 @@ public class Checkers {
 
             if (validMove(pieceRow, pieceCol, rowTo, colTo)) {
                 new Message("Valid move");
+                break;
             } else {
                 new Message("Invalid move");
             }
+        }
 
-            System.out.println(validMove(pieceRow, pieceCol, rowTo, colTo));
+        // updating board
+        if (playerOnesTurn) {
+            // red's turn
+            if (Math.abs(rowTo - pieceRow) == 2) {
+                // capturing piece
+                if (colTo - pieceCol < 0) {
+                    // capturing left
+                    board[rowTo + 1][colTo + 1] = 'e';
+                } else {
+                    // capturing right
+                    board[rowTo + 1][colTo - 1] = 'e';
+                }
+            }
+
+            // moves piece forward
+            board[rowTo][colTo] = board[pieceRow][pieceCol];
+            board[pieceRow][pieceCol] = 'e';
+
+        } else {
+            // black's turn
+            if (Math.abs(rowTo - pieceRow) == 2) {
+                // capturing piece
+                if (colTo - pieceCol < 0) {
+                    // capturing left
+                    board[rowTo - 1][colTo + 1] = 'e';
+                } else {
+                    // capturing right
+                    board[rowTo - 1][colTo - 1] = 'e';
+                }
+            }
+
+            // moves piece forward
+            board[rowTo][colTo] = board[pieceRow][pieceCol];
+            board[pieceRow][pieceCol] = 'e';
         }
 
     }
@@ -499,80 +581,128 @@ public class Checkers {
     public boolean validMove(int rowFrom, int colFrom, int rowTo, int colTo) {
         char piece = board[rowFrom][colFrom];
 
-        if (playerOnesTurn) {
+        if (playerOnesTurn && (piece == 'r' || piece == 'R')) {
+            // red's turn
             if (Math.abs(rowTo - rowFrom) == 1) {
-                if (rowTo - rowFrom > 0) {
-                    // moving forward one
+                // moving one forwards or backwards
+                if (rowTo - rowFrom < 0) {
+                    // moving forward one square
                     if (Math.abs(colTo - colFrom) == 1) {
-                        if (board[rowTo][colTo] == '-') {
+                        // makes sure the piece is moving on a diagonal
+                        if (board[rowTo][colTo] == 'e') {
+                            // square is empty
                             return true;
-                        } else {
-                            return false;
                         }
-                    } else {
-                        return false;
                     }
                 } else {
-                    // moving backward one
+                    // moving backward one square
                     if (piece == 'R') {
                         if (Math.abs(colTo - colFrom) == 1) {
-                            if (board[rowTo][colTo] == '-') {
+                            // makes sure the piece is moving on a diagonal
+                            if (board[rowTo][colTo] == 'e') {
+                                // square is empty
                                 return true;
-                            } else {
-                                return false;
                             }
-                        } else {
-                            return false;
                         }
-                    } else {
-                        return false;
                     }
                 }
             } else if (Math.abs(rowTo - rowFrom) == 2) {
                 // capturing piece
 
-                if (rowTo - rowFrom < 0) {
-                    // capturing backwards
-                    if (piece == 'r') {
-                        return false;
-                    } else {
-                        if (Math.abs(colTo - colFrom) == 2) {
-                            // makes sure the piece is capturing perfectly diagonally
-
-                        }
-                    }
-                }
-
-                if (piece == 'r') {
-                    if (rowTo - rowFrom == 2 && Math.abs(colTo - colFrom) == 2) {
-                        if (board[rowTo][colTo] == '-') {
-                            if (colTo - colFrom < 0) {
-                                // capturing left
-                                if (board[rowTo - 1][colTo + 1] == 'b' || board[rowTo - 1][colTo + 1] == 'B') {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            } else {
-                                // capturing right
-                                if (board[rowTo - 1][colTo - 1] == 'b' || board[rowTo - 1][colTo - 1] == 'B') {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
+                if (rowTo - rowFrom == -2 && Math.abs(colTo - colFrom) == 2) {
+                    // capturing forwards
+                    if (board[rowTo][colTo] == 'e') {
+                        if (colTo - colFrom < 0) {
+                            // capturing left
+                            if (board[rowTo + 1][colTo + 1] == 'b' || board[rowTo + 1][colTo + 1] == 'B') {
+                                return true;
                             }
                         } else {
-                            return false;
+                            // capturing right
+                            if (board[rowTo + 1][colTo - 1] == 'b' || board[rowTo + 1][colTo - 1] == 'B') {
+                                return true;
+                            }
                         }
-                    } else {
-                        return false;
+                    }
+                } else if (rowTo - rowFrom == 2 && Math.abs(colTo - colFrom) == 2) {
+                    // capturing backwards (only for kings)
+                    if (piece == 'R' && board[rowTo][colTo] == 'e') {
+                        if (colTo - colFrom < 0) {
+                            // capturing left
+                            if (board[rowTo - 1][colTo + 1] == 'b' || board[rowTo - 1][colTo + 1] == 'B') {
+                                return true;
+                            }
+                        } else {
+                            // capturing right
+                            if (board[rowTo - 1][colTo - 1] == 'b' || board[rowTo - 1][colTo - 1] == 'B') {
+                                return true;
+                            }
+                        }
                     }
                 }
-            } else {
-                return false;
+
             }
-        } else {
-            return false;
+        } else if (!playerOnesTurn && (piece == 'b' || piece == 'B')) {
+            // black's turn
+            if (Math.abs(rowTo - rowFrom) == 1) {
+                // moving one forwards or backwards
+                if (rowTo - rowFrom > 0) {
+                    // moving forward one square
+                    if (Math.abs(colTo - colFrom) == 1) {
+                        // makes sure the piece is moving on a diagonal
+                        if (board[rowTo][colTo] == 'e') {
+                            // square is empty
+                            return true;
+                        }
+                    }
+                } else {
+                    // moving backward one square
+                    if (piece == 'B') {
+                        if (Math.abs(colTo - colFrom) == 1) {
+                            // makes sure the piece is moving on a diagonal
+                            if (board[rowTo][colTo] == 'e') {
+                                // square is empty
+                                return true;
+                            }
+                        }
+                    }
+                }
+            } else if (Math.abs(rowTo - rowFrom) == 2) {
+                // capturing piece
+
+                if (rowTo - rowFrom == 2 && Math.abs(colTo - colFrom) == 2) {
+                    // capturing forwards
+                    if (board[rowTo][colTo] == 'e') {
+                        if (colTo - colFrom < 0) {
+                            // capturing left
+                            if (board[rowTo - 1][colTo + 1] == 'r' || board[rowTo - 1][colTo + 1] == 'R') {
+                                return true;
+                            }
+                        } else {
+                            // capturing right
+                            if (board[rowTo - 1][colTo - 1] == 'r' || board[rowTo - 1][colTo - 1] == 'R') {
+                                return true;
+                            }
+                        }
+                    }
+                } else if (rowTo - rowFrom == -2 && Math.abs(colTo - colFrom) == 2) {
+                    // capturing backwards (only for kings)
+                    if (piece == 'B' && board[rowTo][colTo] == 'e') {
+                        if (colTo - colFrom < 0) {
+                            // capturing left
+                            if (board[rowTo + 1][colTo + 1] == 'r' || board[rowTo + 1][colTo + 1] == 'R') {
+                                return true;
+                            }
+                        } else {
+                            // capturing right
+                            if (board[rowTo + 1][colTo - 1] == 'r' || board[rowTo + 1][colTo - 1] == 'R') {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+            }
         }
         return false;
     }
