@@ -371,6 +371,19 @@ public class Checkers {
         while (true) {
             turn();
 
+            if (evaluatePosition() == 'w') {
+                if (playerOnesTurn) {
+                    drawEndScreen(true);
+                    return;
+                } else {
+                    drawEndScreen(true);
+                    return;
+                }
+            } else if (evaluatePosition() == 'd') {
+                drawEndScreen(false);
+                return;
+            }
+
             if (!playerOnesTurn) {
                 // increment turn number if it's black's turn
                 turnNumber++;
@@ -381,6 +394,70 @@ public class Checkers {
             // write new position to file
             updateGameFile();
         }
+    }
+
+    public void drawEndScreen(boolean win) {
+        if (win) {
+            if (playerOnesTurn) {
+                c.setColor(new Color(244, 204, 204)); // light red background
+            } else {
+                c.setColor(new Color(217, 217, 217)); // light grey background
+            }
+        } else {
+            c.setColor(new Color(217,210,233)); // light purple background
+        }
+
+        c.fillRect(0, 0, 1024, 728); // background
+
+        // drawing checkers at the side for decoration
+        if (win) {
+            for (int i = 0; i < 7; i++) {
+                drawChecker(60, 480 - i * 30, playerOnesTurn);
+            }
+
+            for (int i = 0; i < 7; i++) {
+                drawChecker(172, 480 - i * 30, playerOnesTurn);
+            }
+        } else {
+            for (int i = 0; i < 7; i++) {
+                drawChecker(60, 480 - i * 30, true);
+            }
+
+            for (int i = 0; i < 7; i++) {
+                drawChecker(172, 480 - i * 30, false);
+            }
+        }
+
+        if (win) {
+            // displaying crown
+            int[] xPoints = {85, 130, 170, 210, 255, 255, 85}; // crown x coordinates
+            int[] yPoints = {250, 275, 225, 275, 250, 320, 320}; // crown y coordinates
+            c.setColor(new Color(246, 178, 107)); // yellow for crown
+            c.fillPolygon(xPoints, yPoints, 7);
+
+            // congratulatory message
+            c.setColor(Color.BLACK);
+            c.setFont(new Font("Serif", Font.BOLD, 60));
+            c.drawString("CONGRATULATIONS!", 310, 400);
+            c.setFont(new Font("Serif", Font.BOLD, 24));
+            if (playerOnesTurn) {
+                c.drawString(playerOne + " wins in " + turnNumber + " moves", 310, 470);
+            } else {
+                c.drawString(playerTwo + " wins in " + turnNumber + " moves", 310, 470);
+            }
+
+        } else {
+            // stalemate message
+            c.setColor(Color.BLACK);
+            c.setFont(new Font("Serif", Font.BOLD, 60));
+            c.drawString("STALEMATE!", 310, 400);
+            c.setFont(new Font("Serif", Font.BOLD, 50));
+            c.drawString("Nobody can move, so it's a tie!", 310, 480);
+        }
+
+        c.setFont(new Font("Serif", Font.BOLD, 18));
+        c.drawString("Press any key to go back to main menu", 370, 700);
+        c.getChar();
     }
 
     public void turn() {
@@ -627,22 +704,13 @@ public class Checkers {
     public boolean validMove(int rowFrom, int colFrom, int rowTo, int colTo) {
         char piece = board[rowFrom][colFrom];
 
-        if (playerOnesTurn && (piece == 'r' || piece == 'R')) {
-            // red's turn
-            if (Math.abs(rowTo - rowFrom) == 1) {
-                // moving one forwards or backwards
-                if (rowTo - rowFrom < 0) {
-                    // moving forward one square
-                    if (Math.abs(colTo - colFrom) == 1) {
-                        // makes sure the piece is moving on a diagonal
-                        if (board[rowTo][colTo] == 'e') {
-                            // square is empty
-                            return true;
-                        }
-                    }
-                } else {
-                    // moving backward one square
-                    if (piece == 'R') {
+        try {
+            if (playerOnesTurn && (piece == 'r' || piece == 'R')) {
+                // red's turn
+                if (Math.abs(rowTo - rowFrom) == 1) {
+                    // moving one forwards or backwards
+                    if (rowTo - rowFrom < 0) {
+                        // moving forward one square
                         if (Math.abs(colTo - colFrom) == 1) {
                             // makes sure the piece is moving on a diagonal
                             if (board[rowTo][colTo] == 'e') {
@@ -650,60 +718,60 @@ public class Checkers {
                                 return true;
                             }
                         }
-                    }
-                }
-            } else if (Math.abs(rowTo - rowFrom) == 2) {
-                // capturing piece
-
-                if (rowTo - rowFrom == -2 && Math.abs(colTo - colFrom) == 2) {
-                    // capturing forwards
-                    if (board[rowTo][colTo] == 'e') {
-                        if (colTo - colFrom < 0) {
-                            // capturing left
-                            if (board[rowTo + 1][colTo + 1] == 'b' || board[rowTo + 1][colTo + 1] == 'B') {
-                                return true;
-                            }
-                        } else {
-                            // capturing right
-                            if (board[rowTo + 1][colTo - 1] == 'b' || board[rowTo + 1][colTo - 1] == 'B') {
-                                return true;
+                    } else {
+                        // moving backward one square
+                        if (piece == 'R') {
+                            if (Math.abs(colTo - colFrom) == 1) {
+                                // makes sure the piece is moving on a diagonal
+                                if (board[rowTo][colTo] == 'e') {
+                                    // square is empty
+                                    return true;
+                                }
                             }
                         }
                     }
-                } else if (rowTo - rowFrom == 2 && Math.abs(colTo - colFrom) == 2) {
-                    // capturing backwards (only for kings)
-                    if (piece == 'R' && board[rowTo][colTo] == 'e') {
-                        if (colTo - colFrom < 0) {
-                            // capturing left
-                            if (board[rowTo - 1][colTo + 1] == 'b' || board[rowTo - 1][colTo + 1] == 'B') {
-                                return true;
-                            }
-                        } else {
-                            // capturing right
-                            if (board[rowTo - 1][colTo - 1] == 'b' || board[rowTo - 1][colTo - 1] == 'B') {
-                                return true;
-                            }
-                        }
-                    }
-                }
+                } else if (Math.abs(rowTo - rowFrom) == 2) {
+                    // capturing piece
 
-            }
-        } else if (!playerOnesTurn && (piece == 'b' || piece == 'B')) {
-            // black's turn
-            if (Math.abs(rowTo - rowFrom) == 1) {
-                // moving one forwards or backwards
-                if (rowTo - rowFrom > 0) {
-                    // moving forward one square
-                    if (Math.abs(colTo - colFrom) == 1) {
-                        // makes sure the piece is moving on a diagonal
+                    if (rowTo - rowFrom == -2 && Math.abs(colTo - colFrom) == 2) {
+                        // capturing forwards
                         if (board[rowTo][colTo] == 'e') {
-                            // square is empty
-                            return true;
+                            if (colTo - colFrom < 0) {
+                                // capturing left
+                                if (board[rowTo + 1][colTo + 1] == 'b' || board[rowTo + 1][colTo + 1] == 'B') {
+                                    return true;
+                                }
+                            } else {
+                                // capturing right
+                                if (board[rowTo + 1][colTo - 1] == 'b' || board[rowTo + 1][colTo - 1] == 'B') {
+                                    return true;
+                                }
+                            }
+                        }
+                    } else if (rowTo - rowFrom == 2 && Math.abs(colTo - colFrom) == 2) {
+                        // capturing backwards (only for kings)
+                        if (piece == 'R' && board[rowTo][colTo] == 'e') {
+                            if (colTo - colFrom < 0) {
+                                // capturing left
+                                if (board[rowTo - 1][colTo + 1] == 'b' || board[rowTo - 1][colTo + 1] == 'B') {
+                                    return true;
+                                }
+                            } else {
+                                // capturing right
+                                if (board[rowTo - 1][colTo - 1] == 'b' || board[rowTo - 1][colTo - 1] == 'B') {
+                                    return true;
+                                }
+                            }
                         }
                     }
-                } else {
-                    // moving backward one square
-                    if (piece == 'B') {
+
+                }
+            } else if (!playerOnesTurn && (piece == 'b' || piece == 'B')) {
+                // black's turn
+                if (Math.abs(rowTo - rowFrom) == 1) {
+                    // moving one forwards or backwards
+                    if (rowTo - rowFrom > 0) {
+                        // moving forward one square
                         if (Math.abs(colTo - colFrom) == 1) {
                             // makes sure the piece is moving on a diagonal
                             if (board[rowTo][colTo] == 'e') {
@@ -711,45 +779,60 @@ public class Checkers {
                                 return true;
                             }
                         }
-                    }
-                }
-            } else if (Math.abs(rowTo - rowFrom) == 2) {
-                // capturing piece
-
-                if (rowTo - rowFrom == 2 && Math.abs(colTo - colFrom) == 2) {
-                    // capturing forwards
-                    if (board[rowTo][colTo] == 'e') {
-                        if (colTo - colFrom < 0) {
-                            // capturing left
-                            if (board[rowTo - 1][colTo + 1] == 'r' || board[rowTo - 1][colTo + 1] == 'R') {
-                                return true;
-                            }
-                        } else {
-                            // capturing right
-                            if (board[rowTo - 1][colTo - 1] == 'r' || board[rowTo - 1][colTo - 1] == 'R') {
-                                return true;
+                    } else {
+                        // moving backward one square
+                        if (piece == 'B') {
+                            if (Math.abs(colTo - colFrom) == 1) {
+                                // makes sure the piece is moving on a diagonal
+                                if (board[rowTo][colTo] == 'e') {
+                                    // square is empty
+                                    return true;
+                                }
                             }
                         }
                     }
-                } else if (rowTo - rowFrom == -2 && Math.abs(colTo - colFrom) == 2) {
-                    // capturing backwards (only for kings)
-                    if (piece == 'B' && board[rowTo][colTo] == 'e') {
-                        if (colTo - colFrom < 0) {
-                            // capturing left
-                            if (board[rowTo + 1][colTo + 1] == 'r' || board[rowTo + 1][colTo + 1] == 'R') {
-                                return true;
+                } else if (Math.abs(rowTo - rowFrom) == 2) {
+                    // capturing piece
+
+                    if (rowTo - rowFrom == 2 && Math.abs(colTo - colFrom) == 2) {
+                        // capturing forwards
+                        if (board[rowTo][colTo] == 'e') {
+                            if (colTo - colFrom < 0) {
+                                // capturing left
+                                if (board[rowTo - 1][colTo + 1] == 'r' || board[rowTo - 1][colTo + 1] == 'R') {
+                                    return true;
+                                }
+                            } else {
+                                // capturing right
+                                if (board[rowTo - 1][colTo - 1] == 'r' || board[rowTo - 1][colTo - 1] == 'R') {
+                                    return true;
+                                }
                             }
-                        } else {
-                            // capturing right
-                            if (board[rowTo + 1][colTo - 1] == 'r' || board[rowTo + 1][colTo - 1] == 'R') {
-                                return true;
+                        }
+                    } else if (rowTo - rowFrom == -2 && Math.abs(colTo - colFrom) == 2) {
+                        // capturing backwards (only for kings)
+                        if (piece == 'B' && board[rowTo][colTo] == 'e') {
+                            if (colTo - colFrom < 0) {
+                                // capturing left
+                                if (board[rowTo + 1][colTo + 1] == 'r' || board[rowTo + 1][colTo + 1] == 'R') {
+                                    return true;
+                                }
+                            } else {
+                                // capturing right
+                                if (board[rowTo + 1][colTo - 1] == 'r' || board[rowTo + 1][colTo - 1] == 'R') {
+                                    return true;
+                                }
                             }
                         }
                     }
-                }
 
+                }
             }
+        } catch (IndexOutOfBoundsException e) {
+            // program is looking at a square outside the board
+            return false;
         }
+
         return false;
     }
 
@@ -997,7 +1080,80 @@ public class Checkers {
     }
 
     public char evaluatePosition() {
-        return 'w'; // placeholder
+        boolean won = true;
+
+        // checking to see if the opponent's pieces are still on the board
+        for (int i = 0; i < board.length; i ++) {
+            for (int j = 0; j < board[i].length; j ++) {
+                if (playerOnesTurn) {
+                    // red's turn
+                    if (board[i][j] == 'b' || board[i][j] == 'B') {
+                        won = false;
+                        break;
+                    }
+                } else {
+                    // black's turn
+                    if (board[i][j] == 'r' || board[i][j] == 'R') {
+                        won = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (won) {
+            return 'w';
+        }
+
+        boolean draw = true;
+
+        // check for draw
+        for (int i = 0; i < board.length; i ++) {
+            for (int j = 0; j < board[i].length; j ++) {
+                // checking all the moves for each piece to see if there's a possible move, if there is, it's not a draw
+                if (board[i][j] == 'r') {
+                    if (
+                        validMove(i, j, i - 1, j - 1) ||
+                        validMove(i, j, i - 1, j + 1) ||
+                        validMove(i, j, i - 2, j - 2) ||
+                        validMove(i, j, i - 2, j + 2)
+                    ) {
+                        draw = false;
+                        break;
+                    }
+                } else if (board[i][j] == 'b') {
+                    if (
+                        validMove(i, j, i + 1, j - 1) ||
+                        validMove(i, j, i + 1, j + 1) ||
+                        validMove(i, j, i + 2, j - 2) ||
+                        validMove(i, j, i + 2, j + 2)
+                    ) {
+                        draw = false;
+                        break;
+                    }
+                } else if (board[i][j] == 'R' || board[i][j] == 'B') {
+                    if (
+                        validMove(i, j, i - 1, j - 1) ||
+                        validMove(i, j, i - 1, j + 1) ||
+                        validMove(i, j, i + 1, j - 1) ||
+                        validMove(i, j, i + 1, j + 1) ||
+                        validMove(i, j, i - 2, j - 2) ||
+                        validMove(i, j, i - 2, j + 2) ||
+                        validMove(i, j, i + 2, j - 2) ||
+                        validMove(i, j, i + 2, j + 2)
+                    ) {
+                        draw = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (draw) {
+            return 'd';
+        } else {
+            return 'c';
+        }
     }
 
     public void loadFile() {
