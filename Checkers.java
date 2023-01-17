@@ -1,5 +1,5 @@
 // Names: Ethan Diep and Glen Lin
-// Date: January 13, 2023
+// Date: January 18, 2023
 // Teacher: Ms. Basaraba
 // Description: This program makes a checkers game in the Console window
 
@@ -19,7 +19,7 @@ public class Checkers {
     public static void main(String[] args) {
         Checkers g = new Checkers();
 
-//        g.splashScreen();
+        g.splashScreen();
 
         while (true) {
             g.mainMenu();
@@ -366,6 +366,7 @@ public class Checkers {
         while (true) {
             turn();
 
+            // evaluate position
             if (evaluatePosition() == 'w') {
                 if (playerOnesTurn) {
                     drawEndScreen(true);
@@ -384,7 +385,7 @@ public class Checkers {
                 turnNumber++;
             }
 
-            playerOnesTurn = !playerOnesTurn;
+            playerOnesTurn = !playerOnesTurn; // switching turn
 
             // write new position to file
             updateGameFile();
@@ -450,6 +451,7 @@ public class Checkers {
             c.drawString("Nobody can move, so it's a tie!", 310, 480);
         }
 
+        // instructions to go back to main menu
         c.setFont(new Font("Serif", Font.BOLD, 18));
         c.drawString("Press any key to go back to main menu", 370, 700);
         c.getChar();
@@ -587,6 +589,8 @@ public class Checkers {
                 c.setFont(new Font("Serif", Font.BOLD, 30));
                 c.drawString("Choose a square to move to", 630, 620);
 
+
+                // reselection instructions
                 if (!secondMove) {
                     c.setFont(new Font("Serif", Font.BOLD, 25));
                     c.drawString("Press        to reselect your piece", 637, 675);
@@ -714,6 +718,7 @@ public class Checkers {
 
             }
 
+            // checking if there is still a capture to be made
             if (secondMove && (board[rowTo][colTo] == 'r')) {
                 if (
                     validMove(rowTo, colTo, rowTo - 2, colTo - 2) ||

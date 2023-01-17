@@ -1,5 +1,5 @@
 // Names: Ethan Diep and Glen Lin
-// Date: January 13, 2023
+// Date: January 18, 2023
 // Teacher: Ms. Basaraba
 // Description: This class animates checkers falling as part of the splash screen
 
