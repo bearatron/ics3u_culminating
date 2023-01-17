@@ -19,13 +19,8 @@ public class Checkers {
     public static void main(String[] args) {
         Checkers g = new Checkers();
 
-//        g.loadFile();
-//
-//        try {
-//            Thread.sleep(10000);
-//        } catch (Exception e) {}
-//
 //        g.splashScreen();
+
         while (true) {
             g.mainMenu();
             if (choice == 1) {
@@ -462,242 +457,297 @@ public class Checkers {
 
     public void turn() {
         fileLoaded = false; // reset file loaded variable
-
-        // draws the background and board
-        c.setColor(new Color(182,215,168));
-        c.fillRect(0, 0, 1024, 728);
-        drawBoard(board, 40, 115);
-
-        // message that says whose turn it is
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Monospaced", Font.BOLD, 40));
-
-        // drawing centered message
-        if (playerOnesTurn) {
-            c.drawString(playerOne, 512 - (7 + playerOne.length()) / 2 * 25, 90);
-            c.drawString("'s turn", 512 - (7 + playerOne.length()) / 2 * 25 + playerOne.length() * 25, 90);
-            drawTopChecker(665, 120, 44, 4, true, false);
-        } else {
-            c.drawString(playerTwo, 512 - (7 + playerTwo.length()) / 2 * 25, 90);
-            c.drawString("'s turn", 512 - (7 + playerTwo.length()) / 2 * 25 + playerTwo.length() * 25, 90);
-            drawTopChecker(665, 120, 44, 4, false, false);
-        }
-
-        // displaying the turn number
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Monospaced", Font.BOLD, 30));
-        c.drawString("Turn", 725, 150);
-        c.drawString(String.valueOf(turnNumber), 810, 150);
-
-        // instructions
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Serif", Font.PLAIN, 30));
-        c.drawString("Use", 685, 350);
-
-        // W key
-        c.setColor(Color.WHITE);
-        c.fillRoundRect(815, 280, 30, 30, 10, 10);
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Serif", Font.BOLD, 24));
-        c.drawRoundRect(815, 280, 30, 30, 10, 10);
-        c.drawString("W", 819,305);
-
-        // A key
-        c.setColor(Color.WHITE);
-        c.fillRoundRect(775, 325, 30, 30, 10, 10);
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Serif", Font.BOLD, 24));
-        c.drawRoundRect(775, 325, 30, 30, 10, 10);
-        c.drawString("A", 781,350);
-
-        // S key
-        c.setColor(Color.WHITE);
-        c.fillRoundRect(815, 325, 30, 30, 10, 10);
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Serif", Font.BOLD, 24));
-        c.drawRoundRect(815, 325, 30, 30, 10, 10);
-        c.drawString("S", 822,350);
-
-        // D key
-        c.setColor(Color.WHITE);
-        c.fillRoundRect(855, 325, 30, 30, 10, 10);
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Serif", Font.BOLD, 24));
-        c.drawRoundRect(855, 325, 30, 30, 10, 10);
-        c.drawString("D", 860,350);
-
-        // instructions continued
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Serif", Font.PLAIN, 30));
-        c.drawString("to move the cursor", 675, 417);
-        c.drawString("Press                 to select", 655, 520);
-
-        // enter key
-        c.setColor(Color.WHITE);
-        c.fillRoundRect(730, 495, 100, 30, 10, 10); // enter
-        c.setColor(Color.BLACK);
-        c.drawRoundRect(730, 495, 100, 30, 10, 10); // enter
-
-        c.setColor(Color.BLACK);
-        c.setFont(new Font("Serif", Font.BOLD, 24));
-        c.drawString("ENTER", 738, 520);
-
         int[] selection;
-        int pieceRow, pieceCol, rowTo = -1, colTo = -1;
+        int pieceRow = -1, pieceCol = -1, rowTo = -1, colTo = -1;
         boolean reselect; // stores whether the user wants to reselect their piece choice or not
+        boolean secondMove = false;
 
         while (true) {
-            reselect = false;
-
-            // erases previous instructions
-            c.setColor(new Color(182, 215, 168));
-            c.fillRect(620, 585, 400, 100);
-            c.setColor(Color.BLACK);
-            c.setFont(new Font("Serif", Font.BOLD, 30));
-            c.drawString("Choose a piece to move", 650, 650);
-
-            // selecting piece
             while (true) {
+                reselect = false;
+
+                // draws the background and board
+                c.setColor(new Color(182, 215, 168));
+                c.fillRect(0, 0, 1024, 728);
+                drawBoard(board, 40, 115);
+
+                // message that says whose turn it is
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Monospaced", Font.BOLD, 40));
+
+                // drawing centered message
                 if (playerOnesTurn) {
-                    selection = squareSelection(7, 0); // bottom left square
+                    c.drawString(playerOne, 512 - (7 + playerOne.length()) / 2 * 25, 90);
+                    c.drawString("'s turn", 512 - (7 + playerOne.length()) / 2 * 25 + playerOne.length() * 25, 90);
+                    drawTopChecker(665, 120, 44, 4, true, false);
                 } else {
-                    selection = squareSelection(0, 0); // top left square
+                    c.drawString(playerTwo, 512 - (7 + playerTwo.length()) / 2 * 25, 90);
+                    c.drawString("'s turn", 512 - (7 + playerTwo.length()) / 2 * 25 + playerTwo.length() * 25, 90);
+                    drawTopChecker(665, 120, 44, 4, false, false);
                 }
 
-                pieceRow = selection[0];
-                pieceCol = selection[1];
+                // displaying the turn number
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Monospaced", Font.BOLD, 30));
+                c.drawString("Turn", 725, 150);
+                c.drawString(String.valueOf(turnNumber), 810, 150);
 
-                if (playerOnesTurn) {
-                    if (board[pieceRow][pieceCol] == 'r' || board[pieceRow][pieceCol] == 'R') {
-                        break;
-                    } else {
-                        new Message("Invalid choice, please select a square with a red checker on it");
-                    }
-                } else {
-                    if (board[pieceRow][pieceCol] == 'b' || board[pieceRow][pieceCol] == 'B') {
-                        break;
-                    } else {
-                        new Message("Invalid choice, please select a square with a black checker on it");
+                // instructions
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.PLAIN, 30));
+                c.drawString("Use", 685, 350);
+
+                // W key
+                c.setColor(Color.WHITE);
+                c.fillRoundRect(815, 280, 30, 30, 10, 10);
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.BOLD, 24));
+                c.drawRoundRect(815, 280, 30, 30, 10, 10);
+                c.drawString("W", 819, 305);
+
+                // A key
+                c.setColor(Color.WHITE);
+                c.fillRoundRect(775, 325, 30, 30, 10, 10);
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.BOLD, 24));
+                c.drawRoundRect(775, 325, 30, 30, 10, 10);
+                c.drawString("A", 781, 350);
+
+                // S key
+                c.setColor(Color.WHITE);
+                c.fillRoundRect(815, 325, 30, 30, 10, 10);
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.BOLD, 24));
+                c.drawRoundRect(815, 325, 30, 30, 10, 10);
+                c.drawString("S", 822, 350);
+
+                // D key
+                c.setColor(Color.WHITE);
+                c.fillRoundRect(855, 325, 30, 30, 10, 10);
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.BOLD, 24));
+                c.drawRoundRect(855, 325, 30, 30, 10, 10);
+                c.drawString("D", 860, 350);
+
+                // instructions continued
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.PLAIN, 30));
+                c.drawString("to move the cursor", 675, 417);
+                c.drawString("Press                 to select", 655, 520);
+
+                // enter key
+                c.setColor(Color.WHITE);
+                c.fillRoundRect(730, 495, 100, 30, 10, 10); // enter
+                c.setColor(Color.BLACK);
+                c.drawRoundRect(730, 495, 100, 30, 10, 10); // enter
+
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.BOLD, 24));
+                c.drawString("ENTER", 738, 520);
+
+                // erases previous instructions
+                c.setColor(new Color(182, 215, 168));
+                c.fillRect(620, 585, 400, 100);
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.BOLD, 30));
+                c.drawString("Choose a piece to move", 650, 650);
+
+                if (!secondMove) {
+                    // selecting piece
+                    while (true) {
+                        if (playerOnesTurn) {
+                            selection = squareSelection(7, 0); // bottom left square
+                        } else {
+                            selection = squareSelection(0, 0); // top left square
+                        }
+
+                        pieceRow = selection[0];
+                        pieceCol = selection[1];
+
+                        if (playerOnesTurn) {
+                            if (board[pieceRow][pieceCol] == 'r' || board[pieceRow][pieceCol] == 'R') {
+                                break;
+                            } else {
+                                new Message("Invalid choice, please select a square with a red checker on it");
+                            }
+                        } else {
+                            if (board[pieceRow][pieceCol] == 'b' || board[pieceRow][pieceCol] == 'B') {
+                                break;
+                            } else {
+                                new Message("Invalid choice, please select a square with a black checker on it");
+                            }
+                        }
                     }
                 }
+
+                // erases previous instructions
+                c.setColor(new Color(182, 215, 168));
+                c.fillRect(620, 585, 400, 100);
+                c.setColor(Color.BLACK);
+                c.setFont(new Font("Serif", Font.BOLD, 30));
+                c.drawString("Choose a square to move to", 630, 620);
+
+                if (!secondMove) {
+                    c.setFont(new Font("Serif", Font.BOLD, 25));
+                    c.drawString("Press        to reselect your piece", 637, 675);
+
+                    // R key
+                    c.setColor(Color.WHITE);
+                    c.fillRoundRect(708, 650, 30, 30, 10, 10);
+                    c.setColor(Color.BLACK);
+                    c.setFont(new Font("Serif", Font.BOLD, 24));
+                    c.drawRoundRect(708, 650, 30, 30, 10, 10);
+                    c.drawString("R", 713, 675);
+                }
+
+                // selecting square to move to
+                while (true) {
+                    if (playerOnesTurn) {
+                        selection = squareSelection(7, 0, pieceRow, pieceCol); // bottom left square
+                    } else {
+                        selection = squareSelection(0, 0, pieceRow, pieceCol); // top left square
+                    }
+
+                    if (Arrays.equals(selection, new int[]{-1, -1})) {
+                        // reselect piece to move
+                        reselect = true;
+                        break;
+                    }
+
+                    rowTo = selection[0];
+                    colTo = selection[1];
+
+                    if (!secondMove) {
+                        if (validMove(pieceRow, pieceCol, rowTo, colTo)) {
+                            break;
+                        } else {
+                            new Message("Invalid move");
+                        }
+                    } else {
+                        if (Math.abs(rowTo - pieceRow) == 2 && Math.abs(colTo - pieceCol) == 2 && validMove(pieceRow, pieceCol, rowTo, colTo)) {
+                            break;
+                        } else {
+                            new Message("Invalid move");
+                        }
+                    }
+                }
+
+                if (reselect) {
+                    continue;
+                }
+
+                break;
             }
 
-            // erases previous instructions
-            c.setColor(new Color(182, 215, 168));
-            c.fillRect(620, 585, 400, 100);
-            c.setColor(Color.BLACK);
-            c.setFont(new Font("Serif", Font.BOLD, 30));
-            c.drawString("Choose a square to move to", 630, 620);
-            c.setFont(new Font("Serif", Font.BOLD, 25));
-            c.drawString("Press        to reselect your piece", 637, 675);
+            // updating board
+            if (playerOnesTurn) {
+                // red's turn
+                if (Math.abs(rowTo - pieceRow) == 2) {
+                    // capturing piece
+                    if (rowTo - pieceRow == -2) {
+                        // capturing forwards
+                        if (colTo - pieceCol < 0) {
+                            // capturing left
+                            board[rowTo + 1][colTo + 1] = 'e';
+                        } else {
+                            // capturing right
+                            board[rowTo + 1][colTo - 1] = 'e';
+                        }
+                    } else {
+                        // capturing backwards
+                        if (colTo - pieceCol < 0) {
+                            // capturing left
+                            board[rowTo - 1][colTo + 1] = 'e';
+                        } else {
+                            // capturing right
+                            board[rowTo - 1][colTo - 1] = 'e';
+                        }
+                    }
 
-            // R key
-            c.setColor(Color.WHITE);
-            c.fillRoundRect(708, 650, 30, 30, 10, 10);
-            c.setColor(Color.BLACK);
-            c.setFont(new Font("Serif", Font.BOLD, 24));
-            c.drawRoundRect(708, 650, 30, 30, 10, 10);
-            c.drawString("R", 713,675);
+                    secondMove = true;
+                }
 
-            // selecting square to move to
-            while (true) {
-                if (playerOnesTurn) {
-                    selection = squareSelection(7, 0, pieceRow, pieceCol); // bottom left square
+                // moves piece forward
+                if (rowTo == 0 && board[pieceRow][pieceCol] == 'r') {
+                    // promoting to king
+                    board[rowTo][colTo] = 'R';
                 } else {
-                    selection = squareSelection(0, 0, pieceRow, pieceCol); // top left square
+                    board[rowTo][colTo] = board[pieceRow][pieceCol];
+                }
+                board[pieceRow][pieceCol] = 'e';
+
+            } else {
+                // black's turn
+                if (Math.abs(rowTo - pieceRow) == 2) {
+                    // capturing piece
+                    if (rowTo - pieceRow == 2) {
+                        // capturing forwards
+                        if (colTo - pieceCol < 0) {
+                            // capturing left
+                            board[rowTo - 1][colTo + 1] = 'e';
+                        } else {
+                            // capturing right
+                            board[rowTo - 1][colTo - 1] = 'e';
+                        }
+                    } else {
+                        // capturing backwards
+                        if (colTo - pieceCol < 0) {
+                            // capturing left
+                            board[rowTo + 1][colTo + 1] = 'e';
+                        } else {
+                            // capturing right
+                            board[rowTo + 1][colTo - 1] = 'e';
+                        }
+                    }
+
+                    secondMove = true;
                 }
 
-                if (Arrays.equals(selection, new int[]{-1, -1})) {
-                    // reselect piece to move
-                    reselect = true;
-                    break;
-                }
-
-                rowTo = selection[0];
-                colTo = selection[1];
-
-                if (validMove(pieceRow, pieceCol, rowTo, colTo)) {
-                    break;
+                // moves piece forward
+                if (rowTo == 7 && board[pieceRow][pieceCol] == 'b') {
+                    // promoting to king
+                    board[rowTo][colTo] = 'B';
                 } else {
-                    new Message("Invalid move");
+                    board[rowTo][colTo] = board[pieceRow][pieceCol];
                 }
+                board[pieceRow][pieceCol] = 'e';
+
             }
 
-            if (reselect) {
-                continue;
+            if (secondMove && (board[rowTo][colTo] == 'r')) {
+                if (
+                    validMove(rowTo, colTo, rowTo - 2, colTo - 2) ||
+                    validMove(rowTo, colTo, rowTo - 2, colTo + 2)
+                ) {
+                    pieceRow = rowTo;
+                    pieceCol = colTo;
+                    continue;
+                }
+            } else if (secondMove && (board[rowTo][colTo] == 'b')) {
+                if (
+                    validMove(rowTo, colTo, rowTo + 2, colTo - 2) ||
+                    validMove(rowTo, colTo, rowTo + 2, colTo + 2)
+                ) {
+                    pieceRow = rowTo;
+                    pieceCol = colTo;
+                    continue;
+                }
+            } else if (secondMove && (board[rowTo][colTo] == 'R' || board[rowTo][colTo] == 'B')) {
+                if (
+                    validMove(rowTo, colTo, rowTo + 2, colTo - 2) ||
+                    validMove(rowTo, colTo, rowTo + 2, colTo + 2) ||
+                    validMove(rowTo, colTo, rowTo - 2, colTo - 2) ||
+                    validMove(rowTo, colTo, rowTo - 2, colTo + 2)
+
+                ) {
+                    pieceRow = rowTo;
+                    pieceCol = colTo;
+                    continue;
+                }
+
             }
 
             break;
-        }
-
-        // updating board
-        if (playerOnesTurn) {
-            // red's turn
-            if (Math.abs(rowTo - pieceRow) == 2) {
-                // capturing piece
-                if (rowTo - pieceRow == -2) {
-                    // capturing forwards
-                    if (colTo - pieceCol < 0) {
-                        // capturing left
-                        board[rowTo + 1][colTo + 1] = 'e';
-                    } else {
-                        // capturing right
-                        board[rowTo + 1][colTo - 1] = 'e';
-                    }
-                } else {
-                    // capturing backwards
-                    if (colTo - pieceCol < 0) {
-                        // capturing left
-                        board[rowTo - 1][colTo + 1] = 'e';
-                    } else {
-                        // capturing right
-                        board[rowTo - 1][colTo - 1] = 'e';
-                    }
-                }
-            }
-
-            // moves piece forward
-            if (rowTo == 0 && board[pieceRow][pieceCol] == 'r') {
-                // promoting to king
-                board[rowTo][colTo] = 'R';
-            } else {
-                board[rowTo][colTo] = board[pieceRow][pieceCol];
-            }
-            board[pieceRow][pieceCol] = 'e';
-
-        } else {
-            // black's turn
-            if (Math.abs(rowTo - pieceRow) == 2) {
-                // capturing piece
-                if (rowTo - pieceRow == 2) {
-                    // capturing forwards
-                    if (colTo - pieceCol < 0) {
-                        // capturing left
-                        board[rowTo - 1][colTo + 1] = 'e';
-                    } else {
-                        // capturing right
-                        board[rowTo - 1][colTo - 1] = 'e';
-                    }
-                } else {
-                    // capturing backwards
-                    if (colTo - pieceCol < 0) {
-                        // capturing left
-                        board[rowTo + 1][colTo + 1] = 'e';
-                    } else {
-                        // capturing right
-                        board[rowTo + 1][colTo - 1] = 'e';
-                    }
-                }
-            }
-
-            // moves piece forward
-            if (rowTo == 7 && board[pieceRow][pieceCol] == 'b') {
-                // promoting to king
-                board[rowTo][colTo] = 'B';
-            } else {
-                board[rowTo][colTo] = board[pieceRow][pieceCol];
-            }
-            board[pieceRow][pieceCol] = 'e';
         }
     }
 
