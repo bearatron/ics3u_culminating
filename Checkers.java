@@ -6,7 +6,6 @@
 import java.awt.*;
 import java.io.*;
 import java.util.Arrays;
-
 import hsa.Console;
 import hsa.Message;
 
@@ -15,6 +14,7 @@ public class Checkers {
     static int choice = 1, turnNumber = 1;
     static char [][] board = new char[8][8];
     static String playerOne, playerTwo;
+    static String [] winners = new String[5];
     static boolean playerOnesTurn = true, fileLoaded = false;
     public static void main(String[] args) {
         Checkers g = new Checkers();
@@ -39,6 +39,10 @@ public class Checkers {
                 c.clear();
                 g.instructions();
             }
+            else if (choice == 5) {
+                c.clear();
+                g.drawLeaderboard();
+            }
             else {
                 c.clear();
                 g.goodbye();
@@ -54,10 +58,10 @@ public class Checkers {
         c.setColor(new Color(182,215,168));
         c.fillRect(0, 0, 1024, 728);
 
-        checkersFall1();
-        checkersFall2();
+        //checkersFall1();
+        //checkersFall2();
         textFall();
-        transition();
+        //transition();
     }
 
     public void mainMenu() {
@@ -101,7 +105,7 @@ public class Checkers {
         c.setFont(new Font ("Serif", Font.PLAIN, 30));
         while (true) {
             c.setColor(new Color(182,215,168));
-            c.fillRect(300, 320, 400, 300);
+            c.fillRect(300, 320, 400, 350);
             c.setColor(Color.BLACK);
             if (choice == 1) {
                 // highlights "New Game"
@@ -119,6 +123,7 @@ public class Checkers {
                 c.drawString("Load Game", 430, 434);
                 c.drawString("Instructions", 425, 504);
                 c.drawString("Quit Game", 430, 574);
+                c.drawString("Leaderboard", 427, 644);
             }
             else if (choice == 2) {
                 // draws options
@@ -139,6 +144,7 @@ public class Checkers {
                 c.setFont(new Font ("Serif", Font.PLAIN, 30));
                 c.drawString("Instructions", 425, 504);
                 c.drawString("Quit Game", 430, 574);
+                c.drawString("Leaderboard", 427, 644);
             }
             else if (choice == 3) {
                 // draws options
@@ -159,8 +165,9 @@ public class Checkers {
                 // draws rest of options
                 c.setFont(new Font ("Serif", Font.PLAIN, 30));
                 c.drawString("Quit Game", 430, 574);
+                c.drawString("Leaderboard", 427, 644);
             }
-            else {
+            else if (choice == 4){
                 // draws options
                 c.setFont(new Font ("Serif", Font.PLAIN, 30));
                 c.drawString("New Game", 433, 364);
@@ -176,6 +183,26 @@ public class Checkers {
                 int[] xPoints2 = {630, 630, 593};
                 int[] yPoints2 = {554, 574, 564};
                 c.fillPolygon(xPoints2, yPoints2, 3); // right arrow
+                // draw rest of options
+                c.setFont(new Font ("Serif", Font.PLAIN, 30));
+                c.drawString("Leaderboard", 427, 644);
+            }
+            else {
+                // draws options
+                c.setFont(new Font ("Serif", Font.PLAIN, 30));
+                c.drawString("New Game", 433, 364);
+                c.drawString("Load Game", 430, 434);
+                c.drawString("Instructions", 425, 504);
+                c.drawString("Quit Game", 430, 574);
+
+                c.setFont(new Font ("Serif", Font.BOLD, 30));
+                c.drawString("Leaderboard", 427, 644);
+                int[] xPoints1 = {378, 378, 415};
+                int[] yPoints1 = {624, 644, 634};
+                c.fillPolygon(xPoints1, yPoints1, 3); // left arrow
+                int[] xPoints2 = {650, 650, 613};
+                int[] yPoints2 = {624, 644, 634};
+                c.fillPolygon(xPoints2, yPoints2, 3); // right arrow
             }
 
             // gets input for navigation
@@ -183,7 +210,7 @@ public class Checkers {
             if (in == 115) {
                 // s key is pressed, highlights the subsequent option
                 choice++;
-                if (choice == 5) {
+                if (choice == 6) {
                     choice = 1;
                 }
             }
@@ -191,7 +218,7 @@ public class Checkers {
                 // w key is pressed, highlights the previous option
                 choice--;
                 if (choice == 0) {
-                    choice = 4;
+                    choice = 5;
                 }
             }
             else if (in == 10) {
@@ -403,6 +430,7 @@ public class Checkers {
             c.setColor(new Color(217,210,233)); // light purple background
         }
 
+
         c.fillRect(0, 0, 1024, 728); // background
 
         // drawing checkers at the side for decoration
@@ -438,8 +466,10 @@ public class Checkers {
             c.setFont(new Font("Serif", Font.BOLD, 24));
             if (playerOnesTurn) {
                 c.drawString(playerOne + " wins in " + turnNumber + " moves", 310, 470);
+                updateLeaderboard(playerOne);
             } else {
                 c.drawString(playerTwo + " wins in " + turnNumber + " moves", 310, 470);
+                updateLeaderboard(playerTwo);
             }
 
         } else {
@@ -721,8 +751,8 @@ public class Checkers {
             // checking if there is still a capture to be made
             if (secondMove && (board[rowTo][colTo] == 'r')) {
                 if (
-                    validMove(rowTo, colTo, rowTo - 2, colTo - 2) ||
-                    validMove(rowTo, colTo, rowTo - 2, colTo + 2)
+                        validMove(rowTo, colTo, rowTo - 2, colTo - 2) ||
+                                validMove(rowTo, colTo, rowTo - 2, colTo + 2)
                 ) {
                     pieceRow = rowTo;
                     pieceCol = colTo;
@@ -730,8 +760,8 @@ public class Checkers {
                 }
             } else if (secondMove && (board[rowTo][colTo] == 'b')) {
                 if (
-                    validMove(rowTo, colTo, rowTo + 2, colTo - 2) ||
-                    validMove(rowTo, colTo, rowTo + 2, colTo + 2)
+                        validMove(rowTo, colTo, rowTo + 2, colTo - 2) ||
+                                validMove(rowTo, colTo, rowTo + 2, colTo + 2)
                 ) {
                     pieceRow = rowTo;
                     pieceCol = colTo;
@@ -739,10 +769,10 @@ public class Checkers {
                 }
             } else if (secondMove && (board[rowTo][colTo] == 'R' || board[rowTo][colTo] == 'B')) {
                 if (
-                    validMove(rowTo, colTo, rowTo + 2, colTo - 2) ||
-                    validMove(rowTo, colTo, rowTo + 2, colTo + 2) ||
-                    validMove(rowTo, colTo, rowTo - 2, colTo - 2) ||
-                    validMove(rowTo, colTo, rowTo - 2, colTo + 2)
+                        validMove(rowTo, colTo, rowTo + 2, colTo - 2) ||
+                                validMove(rowTo, colTo, rowTo + 2, colTo + 2) ||
+                                validMove(rowTo, colTo, rowTo - 2, colTo - 2) ||
+                                validMove(rowTo, colTo, rowTo - 2, colTo + 2)
 
                 ) {
                     pieceRow = rowTo;
@@ -1129,9 +1159,36 @@ public class Checkers {
             mainMenu(); // brings user back to main menu
         }
     }
+    public void updateLeaderboard(String win) {
+        try {
+            // creating an object for the game file
+            File leaderboard = new File("leaderboard.txt");
+            try {
+                BufferedReader sc = new BufferedReader(new FileReader(leaderboard));
+                for (int i = 0; i < 5; i++) {
+                    winners[i] = sc.readLine();
+                }
+            } catch(Exception e) {
+                new Message(e.getMessage()); // displays error message
+                mainMenu(); // brings user back to main menu
+            }
+            try {
+                FileWriter fw = new FileWriter(leaderboard);
+                PrintWriter pw = new PrintWriter(fw);
+                pw.println(playerOne + " vs " + playerTwo + ": Winner is " + win);
+                for (int i = 0; i < 4; i++) {
+                    pw.println(winners[i]);
+                }
 
-    public void animateMove() {
-
+                pw.close();
+            } catch (Exception e) {
+                new Message(e.getMessage()); // displays error message
+                mainMenu(); // brings user back to main menu
+            }
+        } catch (Exception e) {
+            new Message(e.getMessage()); // displays error message
+            mainMenu(); // brings user back to main menu
+        }
     }
 
     public char evaluatePosition() {
@@ -1168,34 +1225,34 @@ public class Checkers {
                 // checking all the moves for each piece to see if there's a possible move, if there is, it's not a draw
                 if (board[i][j] == 'r') {
                     if (
-                        validMove(i, j, i - 1, j - 1) ||
-                        validMove(i, j, i - 1, j + 1) ||
-                        validMove(i, j, i - 2, j - 2) ||
-                        validMove(i, j, i - 2, j + 2)
+                            validMove(i, j, i - 1, j - 1) ||
+                                    validMove(i, j, i - 1, j + 1) ||
+                                    validMove(i, j, i - 2, j - 2) ||
+                                    validMove(i, j, i - 2, j + 2)
                     ) {
                         draw = false;
                         break;
                     }
                 } else if (board[i][j] == 'b') {
                     if (
-                        validMove(i, j, i + 1, j - 1) ||
-                        validMove(i, j, i + 1, j + 1) ||
-                        validMove(i, j, i + 2, j - 2) ||
-                        validMove(i, j, i + 2, j + 2)
+                            validMove(i, j, i + 1, j - 1) ||
+                                    validMove(i, j, i + 1, j + 1) ||
+                                    validMove(i, j, i + 2, j - 2) ||
+                                    validMove(i, j, i + 2, j + 2)
                     ) {
                         draw = false;
                         break;
                     }
                 } else if (board[i][j] == 'R' || board[i][j] == 'B') {
                     if (
-                        validMove(i, j, i - 1, j - 1) ||
-                        validMove(i, j, i - 1, j + 1) ||
-                        validMove(i, j, i + 1, j - 1) ||
-                        validMove(i, j, i + 1, j + 1) ||
-                        validMove(i, j, i - 2, j - 2) ||
-                        validMove(i, j, i - 2, j + 2) ||
-                        validMove(i, j, i + 2, j - 2) ||
-                        validMove(i, j, i + 2, j + 2)
+                            validMove(i, j, i - 1, j - 1) ||
+                                    validMove(i, j, i - 1, j + 1) ||
+                                    validMove(i, j, i + 1, j - 1) ||
+                                    validMove(i, j, i + 1, j + 1) ||
+                                    validMove(i, j, i - 2, j - 2) ||
+                                    validMove(i, j, i - 2, j + 2) ||
+                                    validMove(i, j, i + 2, j - 2) ||
+                                    validMove(i, j, i + 2, j + 2)
                     ) {
                         draw = false;
                         break;
@@ -1355,18 +1412,18 @@ public class Checkers {
 
                 // draws board
                 drawBoard(
-                    new char[][] {
-                            {'-', 'b', '-', 'b', '-', 'b', '-', 'b'},
-                            {'b', '-', 'b', '-', 'b', '-', 'b', '-'},
-                            {'-', 'b', '-', 'b', '-', 'b', '-', 'b'},
-                            {'e', '-', 'e', '-', 'e', '-', 'e', '-'},
-                            {'-', 'e', '-', 'e', '-', 'e', '-', 'e'},
-                            {'r', '-', 'r', '-', 'r', '-', 'r', '-'},
-                            {'-', 'r', '-', 'r', '-', 'r', '-', 'r'},
-                            {'r', '-', 'r', '-', 'r', '-', 'r', '-'},
-                    },
-                    40,
-                    100
+                        new char[][] {
+                                {'-', 'b', '-', 'b', '-', 'b', '-', 'b'},
+                                {'b', '-', 'b', '-', 'b', '-', 'b', '-'},
+                                {'-', 'b', '-', 'b', '-', 'b', '-', 'b'},
+                                {'e', '-', 'e', '-', 'e', '-', 'e', '-'},
+                                {'-', 'e', '-', 'e', '-', 'e', '-', 'e'},
+                                {'r', '-', 'r', '-', 'r', '-', 'r', '-'},
+                                {'-', 'r', '-', 'r', '-', 'r', '-', 'r'},
+                                {'r', '-', 'r', '-', 'r', '-', 'r', '-'},
+                        },
+                        40,
+                        100
                 );
 
                 // title
@@ -1627,6 +1684,46 @@ public class Checkers {
                 }
             }
         }
+
+    }
+    public void drawLeaderboard() {
+        // background
+        c.setColor(new Color(182,215,168));
+        c.fillRect(0, 0, 1024, 728);
+
+        //title
+        c.setColor(Color.BLACK);
+        c.setFont(new Font ("Serif", Font.BOLD, 60));
+        c.drawString("LAST 5 MATCHES", 225, 80);
+
+        //draw leaderboard
+        try {
+            // creating an object for the game file
+            File leaderboard = new File("leaderboard.txt");
+            try {
+                BufferedReader sc = new BufferedReader(new FileReader(leaderboard));
+                for (int i = 0; i < 5; i++) {
+                    winners[i] = sc.readLine();
+                }
+            } catch(Exception e) {
+                new Message(e.getMessage()); // displays error message
+                mainMenu(); // brings user back to main menu
+            }
+        } catch (Exception e) {
+            new Message(e.getMessage()); // displays error message
+            mainMenu(); // brings user back to main menu
+        }
+        for (int i = 0; i < 5; i++) {
+            c.setFont(new Font ("Serif", Font.PLAIN, 40));
+            c.setColor(Color.BLACK);
+            c.drawString((i + 1) + ". " + winners[i], 200, 200 + i * 80);
+        }
+
+        //exit message
+        c.setFont(new Font ("Serif", Font.BOLD, 30));
+        c.setColor(Color.BLACK);
+        c.drawString("Press any key to return.", 340, 650);
+        char quit = c.getChar();
 
     }
     public void goodbye() {
